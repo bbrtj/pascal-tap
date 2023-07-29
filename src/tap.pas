@@ -144,7 +144,6 @@ end;
 
 procedure TTAPContext.PrintDiag(const vName, vExpected, vGot: String);
 begin
-	self.Note('Failed test ' + Quoted(vName));
 	self.Note('expected: ' + vExpected);
 	self.Note('     got: ' + vGot);
 	self.Note('');
@@ -182,6 +181,9 @@ begin
 	else vResult := cTAPNot + vResult;
 
 	self.Print([vResult, IntToStr(self.FExecuted), ' - ', Escaped(vName)]);
+	if not vPassed then begin
+		self.Note('Failed test ' + Quoted(vName));
+	end;
 end;
 
 procedure TTAPContext.TestIs(const vGot, vExpected: Int64; const vName: String);
