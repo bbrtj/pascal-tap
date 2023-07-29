@@ -44,7 +44,6 @@ type
 
 		procedure TestOk(const vPassed: Boolean; const vName: String);
 		procedure TestIs(const vGot, vExpected: Int64; const vName: String);
-		procedure TestIs(const vGot, vExpected: Double; const vName: String);
 		procedure TestIs(const vGot, vExpected: String; const vName: String);
 		procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
 
@@ -69,7 +68,6 @@ procedure Note(const vText: String);
 
 procedure TestOk(const vPassed: Boolean; const vName: String);
 procedure TestIs(const vGot, vExpected: Int64; const vName: String);
-procedure TestIs(const vGot, vExpected: Double; const vName: String);
 procedure TestIs(const vGot, vExpected: String; const vName: String);
 procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
 
@@ -181,17 +179,6 @@ begin
 
 	if not vResult then
 		self.PrintDiag(vName, IntToStr(vExpected), IntToStr(vGot));
-end;
-
-procedure TTAPContext.TestIs(const vGot, vExpected: Double; const vName: String);
-var
-	vResult: Boolean;
-begin
-	vResult := vGot = vExpected;
-	self.TestOk(vResult, vName);
-
-	if not vResult then
-		self.PrintDiag(vName, FloatToStr(vExpected), FloatToStr(vGot));
 end;
 
 procedure TTAPContext.TestIs(const vGot, vExpected: String; const vName: String);
@@ -306,11 +293,6 @@ begin
 end;
 
 procedure TestIs(const vGot, vExpected: Int64; const vName: String);
-begin
-	TAPGlobalContext.TestIs(vGot, vExpected, vName);
-end;
-
-procedure TestIs(const vGot, vExpected: Double; const vName: String);
 begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
 end;
