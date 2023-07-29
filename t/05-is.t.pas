@@ -1,4 +1,4 @@
-program OkTest;
+program IsTest;
 
 uses TAP, Tester;
 

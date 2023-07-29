@@ -1,4 +1,4 @@
-program EmptyTest;
+program NoteTest;
 
 uses TAP, Tester;
 

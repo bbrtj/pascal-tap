@@ -1,4 +1,4 @@
-program EmptyTest;
+program PassFailTest;
 
 uses TAP, Tester;
 
