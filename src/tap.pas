@@ -1,3 +1,19 @@
+{
+	Partial implementation of TAP version 14 producer.
+	https://testanything.org/tap-version-14-specification.html
+
+	Features:
+	- outputs valid TAP
+	- minimal interface with a few helpers for basic Pascal types
+	- configurable output destination
+	- keeps track of suite / subtest state (passed / executed)
+	- simple and small, easy to extend
+
+	Missing TAP v14 features:
+	- skipping single testpoints
+	- YAML
+	- pragmas
+}
 unit TAP;
 
 {$mode objfpc}{$H+}{$J-}
@@ -11,6 +27,12 @@ type
 	TTAPPrinter = procedure(const vLine: String) of Object;
 	TTAPStopper = procedure() of Object;
 
+	{
+		TTAPContext is the main class which keeps track of tests performed and
+		outputs TAP. It can be used directly, but this is considered advanced
+		usage. Instead, use the helper procedures provided by this unit to
+		manipulate the global object.
+	}
 	TTAPContext = class
 	const
 		cTAPOk = 'ok ';
@@ -35,9 +57,10 @@ type
 		FPrinter: TTAPPrinter;
 		FStopper: TTAPStopper;
 
-		procedure Print(vVals: Array of String);
 		procedure PrintToStandardOutput(const vLine: String);
 		procedure ExitProgram();
+
+		procedure Print(vVals: Array of String);
 		procedure PrintDiag(const vName, vExpected, vGot: String);
 
 	public
@@ -123,7 +146,7 @@ end;
 procedure TTAPContext.Print(vVals: Array of String);
 var
 	vStr: String = '';
-	vInd: Integer;
+	vInd: UInt32;
 begin
 	if FParent <> nil then
 		vStr += cTAPSubtestIndent;
@@ -172,6 +195,9 @@ begin
 		self.Print([]);
 end;
 
+{
+	Adds a new passing testpoint to the output
+}
 procedure TTAPContext.TestPass(const vName: String);
 begin
 	self.TestOk(True, vName);
@@ -311,26 +337,46 @@ end;
 
 // Common interface
 
+{
+	Adds a note to the TAP output as a comment in a new line
+}
 procedure Note(const vText: String);
 begin
 	TAPGlobalContext.Note(vText);
 end;
 
+{
+	Adds a new unconditionally passing testpoint to the output
+}
 procedure TestPass(const vName: String);
 begin
 	TAPGlobalContext.TestPass(vName);
 end;
 
+{
+	Adds a new unconditionally failing testpoint to the output
+}
 procedure TestFail(const vName: String);
 begin
 	TAPGlobalContext.TestFail(vName);
 end;
 
+{
+	Tests whether the boolean passed as first argument is a true value. Adds a
+	testpoint to the output depending on that test. In case of a failure, extra
+	diagnostics may be added as comments.
+}
 procedure TestOk(const vPassed: Boolean; const vName: String);
 begin
 	TAPGlobalContext.TestOk(vPassed, vName);
 end;
 
+{
+	Compares two first arguments and adds a testpoint to the output based on
+	comparison result, much like TestOk. Can compare Integers, Strings and
+	Booleans. Comparing Floats for equality is flawed on the basic level, so no
+	Float variant is provided.
+}
 procedure TestIs(const vGot, vExpected: Int64; const vName: String);
 begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
@@ -346,26 +392,47 @@ begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
 end;
 
+{
+	Adds an explicit plan to the output. Best run before running other tests.
+	If you don't want to count tests manually you can finish your test with
+	DoneTesting instead.
+}
 procedure Plan(const vNumber: UInt32; const vReason: String = '');
 begin
 	TAPGlobalContext.Plan(vNumber, vReason);
 end;
 
+{
+	Plans for skips or todos. Must be run before any other tests. All the tests
+	will be run, but no output will be produced.
+}
 procedure Plan(const vType: TSkippedType; const vReason: String);
 begin
 	TAPGlobalContext.Plan(vType, vReason);
 end;
 
+{
+	Outputs a plan based on the number of tests ran (if it was not printed
+	already)
+}
 procedure DoneTesting();
 begin
 	TAPGlobalContext.DoneTesting;
 end;
 
+{
+	Bails out of the test. By default, it will be done by halting the program
+	with exit code 255.
+}
 procedure BailOut(const vReason: String);
 begin
 	TAPGlobalContext.BailOut(vReason);
 end;
 
+{
+	Starts a subtest. All subtests must be closed with SubtestEnd for valid
+	output to be produced. Note that subtests cannot be nested.
+}
 procedure SubtestBegin(const vName: String);
 begin
 	TAPGlobalContext := TAPGlobalContext.SubtestBegin(vName);
