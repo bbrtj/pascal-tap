@@ -9,6 +9,7 @@ uses sysutils;
 type
 	TSkippedType = (stNotSkipped, stSkip, stTodo);
 	TTAPPrinter = procedure(const vLine: String) of Object;
+	TTAPStopper = procedure() of Object;
 
 	TTAPContext = class
 	const
@@ -32,9 +33,11 @@ type
 		FSkipped: TSkippedType;
 
 		FPrinter: TTAPPrinter;
+		FStopper: TTAPStopper;
 
 		procedure Print(vVals: Array of String);
 		procedure PrintToStandardOutput(const vLine: String);
+		procedure ExitProgram();
 		procedure PrintDiag(const vName, vExpected, vGot: String);
 
 	public
@@ -61,6 +64,7 @@ type
 		function TestsPassed(): UInt32;
 
 		property Printer: TTAPPrinter read FPrinter write FPrinter;
+		property Stopper: TTAPStopper read FStopper write FStopper;
 	end;
 
 var
@@ -111,6 +115,11 @@ begin
 	writeln(vLine);
 end;
 
+procedure TTAPContext.ExitProgram();
+begin
+	halt(255);
+end;
+
 procedure TTAPContext.Print(vVals: Array of String);
 var
 	vStr: String = '';
@@ -136,10 +145,14 @@ begin
 	self.FPlan := 0;
 	self.FSkipped := stNotSkipped;
 
-	if vParent <> nil then
-		self.FPrinter := vParent.FPrinter
-	else
+	if vParent <> nil then begin
+		self.FPrinter := vParent.FPrinter;
+		self.FStopper := vParent.FStopper;
+	end
+	else begin
 		self.FPrinter := @self.PrintToStandardOutput;
+		self.FStopper := @self.ExitProgram;
+	end;
 end;
 
 procedure TTAPContext.PrintDiag(const vName, vExpected, vGot: String);
@@ -260,7 +273,7 @@ end;
 procedure TTAPContext.BailOut(const vReason: String);
 begin
 	self.Print([cTAPBailOut, Escaped(vReason)]);
-	halt(255);
+	self.FStopper();
 end;
 
 function TTAPContext.SubtestBegin(const vName: String): TTAPContext;
