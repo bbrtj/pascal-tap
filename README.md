@@ -1,8 +1,8 @@
 # Pascal TAP producer implementation
-An Object Pascal unit for testing code by generating TAP version 14 output.
+An Object Pascal unit for testing code by generating [TAP version 14](https://testanything.org/tap-version-14-specification.html) output.
 
 ## Code and documentation
-See the contents of `src` directory.
+See the contents of `src` directory. Documentation can be viewed inline or generated with pasdoc.
 
 ## Bugs and feature requests
 Please use the Github's issue tracker to file both bugs and feature requests.
