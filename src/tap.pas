@@ -146,13 +146,14 @@ end;
 procedure TTAPContext.Print(vVals: Array of String);
 var
 	vStr: String = '';
-	vInd: UInt32;
+	vInd: Int32;
 begin
 	if FParent <> nil then
 		vStr += cTAPSubtestIndent;
 
-	for vInd := 0 to high(vVals) do
-		vStr += vVals[vInd];
+	for vInd := low(vVals) to high(vVals) do begin
+		vStr += vVals[Int32(vInd)];
+	end;
 
 	self.FPrinter(vStr);
 end;
