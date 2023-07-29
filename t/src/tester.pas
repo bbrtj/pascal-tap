@@ -49,6 +49,7 @@ var
 	vNewContext: TTAPContext;
 begin
 	vNewContext := TTAPContext.Create;
+	self.FOutput.Clear;
 	vNewContext.Printer := @self.PrintToVariable;
 
 	FLastContext := TAPGlobalContext;

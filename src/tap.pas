@@ -42,6 +42,8 @@ type
 
 		procedure Note(const vText: String);
 
+		procedure TestPass(const vName: String);
+		procedure TestFail(const vName: String);
 		procedure TestOk(const vPassed: Boolean; const vName: String);
 		procedure TestIs(const vGot, vExpected: Int64; const vName: String);
 		procedure TestIs(const vGot, vExpected: String; const vName: String);
@@ -66,6 +68,8 @@ var
 
 procedure Note(const vText: String);
 
+procedure TestPass(const vName: String);
+procedure TestFail(const vName: String);
 procedure TestOk(const vPassed: Boolean; const vName: String);
 procedure TestIs(const vGot, vExpected: Int64; const vName: String);
 procedure TestIs(const vGot, vExpected: String; const vName: String);
@@ -154,6 +158,16 @@ begin
 		self.Print([cTAPComment, Escaped(vText)])
 	else
 		self.Print([]);
+end;
+
+procedure TTAPContext.TestPass(const vName: String);
+begin
+	self.TestOk(True, vName);
+end;
+
+procedure TTAPContext.TestFail(const vName: String);
+begin
+	self.TestOk(False, vName);
 end;
 
 procedure TTAPContext.TestOk(const vPassed: Boolean; const vName: String);
@@ -285,6 +299,16 @@ end;
 procedure Note(const vText: String);
 begin
 	TAPGlobalContext.Note(vText);
+end;
+
+procedure TestPass(const vName: String);
+begin
+	TAPGlobalContext.TestPass(vName);
+end;
+
+procedure TestFail(const vName: String);
+begin
+	TAPGlobalContext.TestFail(vName);
 end;
 
 procedure TestOk(const vPassed: Boolean; const vName: String);

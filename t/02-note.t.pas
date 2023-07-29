@@ -4,7 +4,7 @@ uses TAP, Tester;
 
 procedure RunTest();
 begin
-	DoneTesting;
+	Note('this is a test');
 end;
 
 begin
@@ -13,7 +13,7 @@ begin
 	TAPTester.Release;
 
 	TestIs(TAPTester.Lines.Count, 1, 'line count ok');
-	TestIs(TAPTester.Lines[0], '1..0', 'plan ok');
+	TestIs(TAPTester.Lines[0], '# this is a test', 'note ok');
 	DoneTesting;
 end.
 
