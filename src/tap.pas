@@ -322,9 +322,12 @@ begin
 	if self.FExecuted > 0 then
 		self.BailOut('cannot plan a running test');
 
-	if vType = stSkip then vFullReason += cTAPSkip
-	else if vType = stTodo then vFullReason += cTAPTodo
-	else exit;
+	case vType of
+		stSkip: vFullReason += cTAPSkip;
+		stTodo: vFullReason += cTAPTodo;
+	else
+		exit;
+	end;
 
 	vFullReason += Escaped(vReason);
 	self.Plan(0, vFullReason);
