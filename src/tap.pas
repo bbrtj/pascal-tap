@@ -10,7 +10,6 @@
 	- simple and small, easy to extend
 
 	Missing TAP v14 features:
-	- skipping single testpoints
 	- YAML
 	- pragmas
 }
@@ -56,19 +55,23 @@ type
 		FPlan: UInt32;
 
 		FPrinter: TTAPPrinter;
+		FAllSkipped: TSkippedType;
 		FSkipped: TSkippedType;
+		FSkippedReason: String;
 		FBailout: TBailoutType;
 
 		procedure PrintToStandardOutput(const vLine: String);
 
 		procedure Print(vVals: Array of String);
 		procedure PrintDiag(const vName, vExpected, vGot: String);
+		procedure InternalOk(const vPassed: Boolean; const vName, vExpected, vGot: String);
 
 	public
 		constructor Create(const vParent: TTAPContext = nil);
 
 		procedure Note(const vText: String);
 
+		procedure Skip(const vSkip: TSkippedType; const vReason: String);
 		procedure TestPass(const vName: String);
 		procedure TestFail(const vName: String);
 		procedure TestOk(const vPassed: Boolean; const vName: String);
@@ -77,7 +80,7 @@ type
 		procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
 
 		procedure Plan(const vNumber: UInt32; const vReason: String = '');
-		procedure Plan(const vType: TSkippedType; const vReason: String);
+		procedure Plan(const vSkip: TSkippedType; const vReason: String);
 		procedure DoneTesting();
 		procedure BailOut(const vReason: String);
 
@@ -98,6 +101,11 @@ var
 	Adds a note to the TAP output as a comment in a new line
 }
 procedure Note(const vText: String);
+
+{
+	Skips the next test executed (just one)
+}
+procedure Skip(const vSkip: TSkippedType; const vReason: String);
 
 {
 	Adds a new unconditionally passing testpoint to the output
@@ -201,6 +209,42 @@ begin
 	self.FPrinter(vStr);
 end;
 
+procedure TTAPContext.PrintDiag(const vName, vExpected, vGot: String);
+begin
+	self.Note('Failed test ' + Quoted(vName));
+	self.Note('expected: ' + vExpected);
+	self.Note('     got: ' + vGot);
+	self.Note('');
+end;
+
+procedure TTAPContext.InternalOk(const vPassed: Boolean; const vName, vExpected, vGot: String);
+var
+	vResult: String = cTAPOk;
+	vDirective: String = '';
+begin
+	if self.FAllSkipped <> stNotSkipped then exit;
+
+	self.FExecuted += 1;
+
+	if vPassed then self.FPassed += 1
+	else vResult := cTAPNot + vResult;
+
+	case self.FSkipped of
+		stSkip: vDirective := ' ' + cTAPComment + cTAPSkip + self.FSkippedReason;
+		stTodo: vDirective := ' ' + cTAPComment + cTAPTodo + self.FSkippedReason;
+	else
+		// vDirective already empty
+	end;
+
+	self.Print([vResult, IntToStr(self.FExecuted), ' - ', Escaped(vName), vDirective]);
+	if (not vPassed) and (self.FSkipped = stNotSkipped) then begin
+		self.PrintDiag(vName, vExpected, vGot);
+	end;
+
+	self.FSkipped := stNotSkipped;
+	self.FSkippedReason := '';
+end;
+
 constructor TTAPContext.Create(const vParent: TTAPContext = nil);
 begin
 	self.FParent := vParent;
@@ -210,7 +254,9 @@ begin
 	self.FExecuted := 0;
 	self.FPlanned := False;
 	self.FPlan := 0;
+	self.FAllSkipped := stNotSkipped;
 	self.FSkipped := stNotSkipped;
+	self.FSkippedReason := '';
 
 	if vParent <> nil then begin
 		self.FPrinter := vParent.FPrinter;
@@ -222,21 +268,20 @@ begin
 	end;
 end;
 
-procedure TTAPContext.PrintDiag(const vName, vExpected, vGot: String);
-begin
-	self.Note('expected: ' + vExpected);
-	self.Note('     got: ' + vGot);
-	self.Note('');
-end;
-
 procedure TTAPContext.Note(const vText: String);
 begin
-	if self.FSkipped <> stNotSkipped then exit;
+	if self.FAllSkipped <> stNotSkipped then exit;
 
 	if length(vText) > 0 then
 		self.Print([cTAPComment, vText])
 	else
 		self.Print([]);
+end;
+
+procedure TTAPContext.Skip(const vSkip: TSkippedType; const vReason: String);
+begin
+	self.FSkipped := vSkip;
+	self.FSkippedReason := vReason;
 end;
 
 procedure TTAPContext.TestPass(const vName: String);
@@ -250,53 +295,23 @@ begin
 end;
 
 procedure TTAPContext.TestOk(const vPassed: Boolean; const vName: String);
-var
-	vResult: String = cTAPOk;
 begin
-	if self.FSkipped <> stNotSkipped then exit;
-
-	self.FExecuted += 1;
-
-	if vPassed then self.FPassed += 1
-	else vResult := cTAPNot + vResult;
-
-	self.Print([vResult, IntToStr(self.FExecuted), ' - ', Escaped(vName)]);
-	if not vPassed then begin
-		self.Note('Failed test ' + Quoted(vName));
-	end;
+	self.InternalOk(vPassed, vName, BoolToReadableStr(True), BoolToReadableStr(False));
 end;
 
 procedure TTAPContext.TestIs(const vGot, vExpected: Int64; const vName: String);
-var
-	vResult: Boolean;
 begin
-	vResult := vGot = vExpected;
-	self.TestOk(vResult, vName);
-
-	if not vResult then
-		self.PrintDiag(vName, IntToStr(vExpected), IntToStr(vGot));
+	self.InternalOk(vGot = vExpected, vName, IntToStr(vExpected), IntToStr(vGot));
 end;
 
 procedure TTAPContext.TestIs(const vGot, vExpected: String; const vName: String);
-var
-	vResult: Boolean;
 begin
-	vResult := vGot = vExpected;
-	self.TestOk(vResult, vName);
-
-	if not vResult then
-		self.PrintDiag(vName, Quoted(vExpected), Quoted(vGot));
+	self.InternalOk(vGot = vExpected, vName, Quoted(vExpected), Quoted(vGot));
 end;
 
 procedure TTAPContext.TestIs(const vGot, vExpected: Boolean; const vName: String);
-var
-	vResult: Boolean;
 begin
-	vResult := vGot = vExpected;
-	self.TestOk(vResult, vName);
-
-	if not vResult then
-		self.PrintDiag(vName, BoolToReadableStr(vExpected), BoolToReadableStr(vGot));
+	self.InternalOk(vGot = vExpected, vName, BoolToReadableStr(vExpected), BoolToReadableStr(vGot));
 end;
 
 procedure TTAPContext.Plan(const vNumber: UInt32; const vReason: String = '');
@@ -315,14 +330,14 @@ begin
 	self.Print(['1..', IntToStr(vNumber), vFullReason]);
 end;
 
-procedure TTAPContext.Plan(const vType: TSkippedType; const vReason: String);
+procedure TTAPContext.Plan(const vSkip: TSkippedType; const vReason: String);
 var
 	vFullReason: String = '';
 begin
 	if self.FExecuted > 0 then
 		self.BailOut('cannot plan a running test');
 
-	case vType of
+	case vSkip of
 		stSkip: vFullReason += cTAPSkip;
 		stTodo: vFullReason += cTAPSkip + cTAPTodo;
 	else
@@ -331,7 +346,12 @@ begin
 
 	vFullReason += vReason;
 	self.Plan(0, vFullReason);
-	self.FSkipped := vType;
+	self.FAllSkipped := vSkip;
+
+	// if this is a subtest, skip next testpoint
+	// (it will be a subtest testpoint)
+	if self.FParent <> nil then
+		self.FParent.Skip(vSkip, vReason);
 end;
 
 procedure TTAPContext.DoneTesting();
@@ -371,7 +391,7 @@ begin
 	result := self.FParent;
 
 	self.DoneTesting;
-	result.TestOk(self.FPlan = self.FPassed, self.FName);
+	result.InternalOk(self.FPlan = self.FPassed, self.FName, 'pass', 'fail');
 	self.Free;
 end;
 
@@ -390,6 +410,11 @@ end;
 procedure Note(const vText: String);
 begin
 	TAPGlobalContext.Note(vText);
+end;
+
+procedure Skip(const vSkip: TSkippedType; const vReason: String);
+begin
+	TAPGlobalContext.Skip(vSkip, vReason);
 end;
 
 procedure TestPass(const vName: String);
