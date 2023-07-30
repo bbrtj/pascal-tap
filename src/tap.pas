@@ -304,7 +304,7 @@ var
 	vFullReason: String = '';
 begin
 	if self.FPlanned then
-		raise Exception.Create('cannot plan twice');
+		self.BailOut('cannot plan twice');
 
 	self.FPlan := vNumber;
 	self.FPlanned := True;
@@ -320,7 +320,7 @@ var
 	vFullReason: String = '';
 begin
 	if self.FExecuted > 0 then
-		raise Exception.Create('cannot plan a running test');
+		self.BailOut('cannot plan a running test');
 
 	if vType = stSkip then vFullReason += cTAPSkip
 	else if vType = stTodo then vFullReason += cTAPTodo
@@ -350,7 +350,7 @@ end;
 function TTAPContext.SubtestBegin(const vName: String): TTAPContext;
 begin
 	if self.FParent <> nil then
-		raise Exception.Create('cannot nest subtests');
+		self.BailOut('cannot nest subtests');
 
 	result := TTAPContext.Create(self);
 	result.FName := vName;
@@ -361,7 +361,7 @@ end;
 function TTAPContext.SubtestEnd(): TTAPContext;
 begin
 	if self.FParent = nil then
-		raise Exception.Create('no subtest to end');
+		self.BailOut('no subtest to end');
 
 	result := self.FParent;
 
