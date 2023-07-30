@@ -342,7 +342,9 @@ end;
 
 procedure TTAPContext.BailOut(const vReason: String);
 begin
-	self.Print([cTAPBailOut, Escaped(vReason)]);
+	// not using self.Print causes bailout to be printed at top TAP
+	// level (compatibility with TAP 13)
+	self.FPrinter(cTAPBailOut + Escaped(vReason));
 
 	case self.FBailout of
 		btHalt: halt(255);
