@@ -10,8 +10,7 @@
 	- simple and small, easy to extend
 
 	Missing TAP v14 features:
-	- YAML
-	- pragmas
+	- YAML diagnostics
 }
 unit TAP;
 
@@ -44,6 +43,7 @@ type
 		cTAPTodo = 'TODO ';
 		cTAPSkip = 'SKIP ';
 		cTAPBailOut = 'Bail out! ';
+		cTAPPragma = 'pragma ';
 
 	strict private
 		FParent: TTAPContext;
@@ -81,6 +81,7 @@ type
 		procedure TestIs(const vGot, vExpected: String; const vName: String); virtual;
 		procedure TestIs(const vGot, vExpected: Boolean; const vName: String); virtual;
 
+		procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
 		procedure Plan(const vNumber: UInt32; const vReason: String = ''); virtual;
 		procedure Plan(const vSkip: TSkippedType; const vReason: String); virtual;
 		procedure DoneTesting(); virtual;
@@ -135,6 +136,12 @@ procedure TestOk(const vPassed: Boolean; const vName: String);
 procedure TestIs(const vGot, vExpected: Int64; const vName: String);
 procedure TestIs(const vGot, vExpected: String; const vName: String);
 procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
+
+{
+	Outputs a pragma. Since pragmas are implementation-specific, no predefined
+	list exists and full string name of the pragma must be specified.
+}
+procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
 
 {
 	Adds an explicit plan to the output. Best run before running other tests.
@@ -316,6 +323,16 @@ begin
 	self.InternalOk(vGot = vExpected, vName, BoolToReadableStr(vExpected), BoolToReadableStr(vGot));
 end;
 
+procedure TTAPContext.Pragma(const vPragma: String; const vStatus: Boolean = True);
+var
+	vPragmaStatus: Char;
+begin
+	if vStatus then vPragmaStatus := '+'
+	else vPragmaStatus := '-';
+
+	self.Print([cTAPPragma, vPragmaStatus, vPragma]);
+end;
+
 procedure TTAPContext.Plan(const vNumber: UInt32; const vReason: String = '');
 var
 	vFullReason: String = '';
@@ -447,6 +464,11 @@ end;
 procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
 begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
+end;
+
+procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
+begin
+	TAPGlobalContext.Pragma(vPragma, vStatus);
 end;
 
 procedure Plan(const vNumber: UInt32; const vReason: String = '');
