@@ -93,20 +93,67 @@ type
 var
 	TAPGlobalContext: TTAPContext;
 
+{
+	Adds a note to the TAP output as a comment in a new line
+}
 procedure Note(const vText: String);
 
+{
+	Adds a new unconditionally passing testpoint to the output
+}
 procedure TestPass(const vName: String);
+
+{
+	Adds a new unconditionally failing testpoint to the output
+}
 procedure TestFail(const vName: String);
+
+{
+	Tests whether the boolean passed as first argument is a true value. Adds a
+	testpoint to the output depending on that test. In case of a failure, extra
+	diagnostics may be added as comments.
+}
 procedure TestOk(const vPassed: Boolean; const vName: String);
+
+{
+	Compares two first arguments and adds a testpoint to the output based on
+	comparison result, much like TestOk. Can compare Integers, Strings and
+	Booleans. Comparing Floats for equality is flawed on the basic level, so no
+	Float variant is provided.
+}
 procedure TestIs(const vGot, vExpected: Int64; const vName: String);
 procedure TestIs(const vGot, vExpected: String; const vName: String);
 procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
 
+{
+	Adds an explicit plan to the output. Best run before running other tests.
+	If you don't want to count tests manually you can finish your test with
+	DoneTesting instead.
+}
 procedure Plan(const vNumber: UInt32; const vReason: String = '');
+
+{
+	Plans for skips or todos. Must be run before any other tests. All the tests
+	will be run, but no output will be produced.
+}
 procedure Plan(const vType: TSkippedType; const vReason: String);
+
+{
+	Outputs a plan based on the number of tests ran (if it was not printed
+	already)
+}
 procedure DoneTesting();
+
+{
+	Bails out of the test. By default, it will be done by halting the program
+	with exit code 255.
+}
 procedure BailOut(const vReason: String);
 
+{
+	Starts a subtest. All subtests must be closed with SubtestEnd for valid
+	output to be produced. Note that subtests cannot be nested.
+}
 procedure SubtestBegin(const vName: String);
 procedure SubtestEnd();
 
@@ -196,9 +243,6 @@ begin
 		self.Print([]);
 end;
 
-{
-	Adds a new passing testpoint to the output
-}
 procedure TTAPContext.TestPass(const vName: String);
 begin
 	self.TestOk(True, vName);
@@ -338,46 +382,26 @@ end;
 
 // Common interface
 
-{
-	Adds a note to the TAP output as a comment in a new line
-}
 procedure Note(const vText: String);
 begin
 	TAPGlobalContext.Note(vText);
 end;
 
-{
-	Adds a new unconditionally passing testpoint to the output
-}
 procedure TestPass(const vName: String);
 begin
 	TAPGlobalContext.TestPass(vName);
 end;
 
-{
-	Adds a new unconditionally failing testpoint to the output
-}
 procedure TestFail(const vName: String);
 begin
 	TAPGlobalContext.TestFail(vName);
 end;
 
-{
-	Tests whether the boolean passed as first argument is a true value. Adds a
-	testpoint to the output depending on that test. In case of a failure, extra
-	diagnostics may be added as comments.
-}
 procedure TestOk(const vPassed: Boolean; const vName: String);
 begin
 	TAPGlobalContext.TestOk(vPassed, vName);
 end;
 
-{
-	Compares two first arguments and adds a testpoint to the output based on
-	comparison result, much like TestOk. Can compare Integers, Strings and
-	Booleans. Comparing Floats for equality is flawed on the basic level, so no
-	Float variant is provided.
-}
 procedure TestIs(const vGot, vExpected: Int64; const vName: String);
 begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
@@ -393,47 +417,26 @@ begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
 end;
 
-{
-	Adds an explicit plan to the output. Best run before running other tests.
-	If you don't want to count tests manually you can finish your test with
-	DoneTesting instead.
-}
 procedure Plan(const vNumber: UInt32; const vReason: String = '');
 begin
 	TAPGlobalContext.Plan(vNumber, vReason);
 end;
 
-{
-	Plans for skips or todos. Must be run before any other tests. All the tests
-	will be run, but no output will be produced.
-}
 procedure Plan(const vType: TSkippedType; const vReason: String);
 begin
 	TAPGlobalContext.Plan(vType, vReason);
 end;
 
-{
-	Outputs a plan based on the number of tests ran (if it was not printed
-	already)
-}
 procedure DoneTesting();
 begin
 	TAPGlobalContext.DoneTesting;
 end;
 
-{
-	Bails out of the test. By default, it will be done by halting the program
-	with exit code 255.
-}
 procedure BailOut(const vReason: String);
 begin
 	TAPGlobalContext.BailOut(vReason);
 end;
 
-{
-	Starts a subtest. All subtests must be closed with SubtestEnd for valid
-	output to be produced. Note that subtests cannot be nested.
-}
 procedure SubtestBegin(const vName: String);
 begin
 	TAPGlobalContext := TAPGlobalContext.SubtestBegin(vName);
@@ -443,8 +446,6 @@ procedure SubtestEnd();
 begin
 	TAPGlobalContext := TAPGlobalContext.SubtestEnd;
 end;
-
-{ implementation end }
 
 initialization
 	TAPGlobalContext := TTAPContext.Create;
