@@ -4,24 +4,24 @@ uses TAP, Tester;
 
 procedure RunTestPositive();
 begin
-	TestLesser(1, 2, '');
-	TestLesser(1.1, 1.2, '');
-	TestLesserOrEqual(1, 1, '');
-	TestGreater(2, 1, '');
-	TestGreater(1.2, 1.1, '');
-	TestGreaterOrEqual(2, 2, '');
+	TestLesser(1, 2);
+	TestLesser(1.1, 1.2);
+	TestLesserOrEqual(1, 1);
+	TestGreater(2, 1);
+	TestGreater(1.2, 1.1);
+	TestGreaterOrEqual(2, 2);
 end;
 
 procedure RunTestNegative();
 begin
-	TestLesser(2, 2, '');
-	TestLesser(3, 2, '');
-	TestLesser(1.2, 1.2, '');
-	TestLesserOrEqual(2, 1, '');
-	TestGreater(2, 2, '');
-	TestGreater(2, 3, '');
-	TestGreater(1.2, 1.2, '');
-	TestGreaterOrEqual(1, 2, '');
+	TestLesser(2, 2);
+	TestLesser(3, 2);
+	TestLesser(1.2, 1.2);
+	TestLesserOrEqual(2, 1);
+	TestGreater(2, 2);
+	TestGreater(2, 3);
+	TestGreater(1.2, 1.2);
+	TestGreaterOrEqual(1, 2);
 end;
 
 var

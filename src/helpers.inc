@@ -10,87 +10,87 @@ begin
 	TAPGlobalContext.Skip(vSkip, vReason);
 end;
 
-procedure TestPass(const vName: String);
+procedure TestPass(const vName: String = '');
 begin
 	TAPGlobalContext.TestPass(vName);
 end;
 
-procedure TestFail(const vName: String);
+procedure TestFail(const vName: String = '');
 begin
 	TAPGlobalContext.TestFail(vName);
 end;
 
-procedure TestOk(const vPassed: Boolean; const vName: String);
+procedure TestOk(const vPassed: Boolean; const vName: String = '');
 begin
 	TAPGlobalContext.TestOk(vPassed, vName);
 end;
 
-procedure TestIs(const vGot, vExpected: Int64; const vName: String);
+procedure TestIs(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
 end;
 
-procedure TestIs(const vGot, vExpected: String; const vName: String);
+procedure TestIs(const vGot, vExpected: String; const vName: String = '');
 begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
 end;
 
-procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
+procedure TestIs(const vGot, vExpected: Boolean; const vName: String = '');
 begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
 end;
 
-procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String);
+procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
 begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
 end;
 
-procedure TestIsnt(const vGot, vExpected: Int64; const vName: String);
+procedure TestIsnt(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.TestIsnt(vGot, vExpected, vName);
 end;
 
-procedure TestIsnt(const vGot, vExpected: String; const vName: String);
+procedure TestIsnt(const vGot, vExpected: String; const vName: String = '');
 begin
 	TAPGlobalContext.TestIsnt(vGot, vExpected, vName);
 end;
 
-procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String);
+procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String = '');
 begin
 	TAPGlobalContext.TestIsnt(vGot, vExpected, vName);
 end;
 
-procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String);
+procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
 begin
 	TAPGlobalContext.TestIsnt(vGot, vExpected, vName);
 end;
 
-procedure TestGreater(const vGot, vExpected: Int64; const vName: String);
+procedure TestGreater(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.TestGreater(vGot, vExpected, vName);
 end;
 
-procedure TestGreater(const vGot, vExpected: Double; const vName: String);
+procedure TestGreater(const vGot, vExpected: Double; const vName: String = '');
 begin
 	TAPGlobalContext.TestGreater(vGot, vExpected, vName);
 end;
 
-procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String);
+procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.TestGreaterOrEqual(vGot, vExpected, vName);
 end;
 
-procedure TestLesser(const vGot, vExpected: Int64; const vName: String);
+procedure TestLesser(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.TestLesser(vGot, vExpected, vName);
 end;
 
-procedure TestLesser(const vGot, vExpected: Double; const vName: String);
+procedure TestLesser(const vGot, vExpected: Double; const vName: String = '');
 begin
 	TAPGlobalContext.TestLesser(vGot, vExpected, vName);
 end;
 
-procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String);
+procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.TestLesserOrEqual(vGot, vExpected, vName);
 end;

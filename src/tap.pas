@@ -75,26 +75,26 @@ type
 		procedure Note(const vText: String);
 
 		procedure Skip(const vSkip: TSkippedType; const vReason: String); virtual;
-		procedure TestPass(const vName: String); virtual;
-		procedure TestFail(const vName: String); virtual;
-		procedure TestOk(const vPassed: Boolean; const vName: String); virtual;
+		procedure TestPass(const vName: String = ''); virtual;
+		procedure TestFail(const vName: String = ''); virtual;
+		procedure TestOk(const vPassed: Boolean; const vName: String = ''); virtual;
 
-		procedure TestIs(const vGot, vExpected: Int64; const vName: String); virtual;
-		procedure TestIs(const vGot, vExpected: String; const vName: String); virtual;
-		procedure TestIs(const vGot, vExpected: Boolean; const vName: String); virtual;
-		procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String); virtual;
+		procedure TestIs(const vGot, vExpected: Int64; const vName: String = ''); virtual;
+		procedure TestIs(const vGot, vExpected: String; const vName: String = ''); virtual;
+		procedure TestIs(const vGot, vExpected: Boolean; const vName: String = ''); virtual;
+		procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String = ''); virtual;
 
-		procedure TestIsnt(const vGot, vExpected: Int64; const vName: String); virtual;
-		procedure TestIsnt(const vGot, vExpected: String; const vName: String); virtual;
-		procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String); virtual;
-		procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String); virtual;
+		procedure TestIsnt(const vGot, vExpected: Int64; const vName: String = ''); virtual;
+		procedure TestIsnt(const vGot, vExpected: String; const vName: String = ''); virtual;
+		procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String = ''); virtual;
+		procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String = ''); virtual;
 
-		procedure TestGreater(const vGot, vExpected: Int64; const vName: String); virtual;
-		procedure TestGreater(const vGot, vExpected: Double; const vName: String); virtual;
-		procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String); virtual;
-		procedure TestLesser(const vGot, vExpected: Int64; const vName: String); virtual;
-		procedure TestLesser(const vGot, vExpected: Double; const vName: String); virtual;
-		procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String); virtual;
+		procedure TestGreater(const vGot, vExpected: Int64; const vName: String = ''); virtual;
+		procedure TestGreater(const vGot, vExpected: Double; const vName: String = ''); virtual;
+		procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String = ''); virtual;
+		procedure TestLesser(const vGot, vExpected: Int64; const vName: String = ''); virtual;
+		procedure TestLesser(const vGot, vExpected: Double; const vName: String = ''); virtual;
+		procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = ''); virtual;
 
 		procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
 		procedure Plan(const vNumber: UInt32; const vReason: String = ''); virtual;
@@ -128,19 +128,19 @@ procedure Skip(const vSkip: TSkippedType; const vReason: String);
 {
 	Adds a new unconditionally passing testpoint to the output
 }
-procedure TestPass(const vName: String);
+procedure TestPass(const vName: String = '');
 
 {
 	Adds a new unconditionally failing testpoint to the output
 }
-procedure TestFail(const vName: String);
+procedure TestFail(const vName: String = '');
 
 {
 	Tests whether the boolean passed as first argument is a true value. Adds a
 	testpoint to the output depending on that test. In case of a failure, extra
 	diagnostics may be added as comments.
 }
-procedure TestOk(const vPassed: Boolean; const vName: String);
+procedure TestOk(const vPassed: Boolean; const vName: String = '');
 
 {
 	Compares two first arguments and adds a testpoint to the output based on
@@ -148,28 +148,28 @@ procedure TestOk(const vPassed: Boolean; const vName: String);
 	Booleans and Object classes. Comparing Floats for equality is flawed on the
 	basic level, so no Float variant is provided.
 }
-procedure TestIs(const vGot, vExpected: Int64; const vName: String);
-procedure TestIs(const vGot, vExpected: String; const vName: String);
-procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
-procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String);
+procedure TestIs(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestIs(const vGot, vExpected: String; const vName: String = '');
+procedure TestIs(const vGot, vExpected: Boolean; const vName: String = '');
+procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
 
 {
 	Same as TestIs, but fails if the arguments are equal.
 }
-procedure TestIsnt(const vGot, vExpected: Int64; const vName: String);
-procedure TestIsnt(const vGot, vExpected: String; const vName: String);
-procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String);
-procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String);
+procedure TestIsnt(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestIsnt(const vGot, vExpected: String; const vName: String = '');
+procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String = '');
+procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
 
 {
 	Compares two numbers to determine whether one is greater than the other.
 }
-procedure TestGreater(const vGot, vExpected: Int64; const vName: String);
-procedure TestGreater(const vGot, vExpected: Double; const vName: String);
-procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String);
-procedure TestLesser(const vGot, vExpected: Int64; const vName: String);
-procedure TestLesser(const vGot, vExpected: Double; const vName: String);
-procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String);
+procedure TestGreater(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestGreater(const vGot, vExpected: Double; const vName: String = '');
+procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestLesser(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestLesser(const vGot, vExpected: Double; const vName: String = '');
+procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = '');
 
 {
 	Outputs a pragma. Since pragmas are implementation-specific, no predefined
@@ -254,7 +254,10 @@ end;
 
 procedure TTAPContext.PrintDiag(const vName, vExpected, vGot: String);
 begin
-	self.Note('Failed test ' + Quoted(vName));
+	if length(vName) > 0 then
+		self.Note('Failed test ' + Quoted(vName))
+	else
+		self.Note('Failed test');
 	self.Note('expected: ' + vExpected);
 	self.Note('     got: ' + vGot);
 	self.Note('');
@@ -272,14 +275,16 @@ begin
 	if vPassed then self.FPassed += 1
 	else vResult := cTAPNot + vResult;
 
+	if length(vName) > 0 then
+		vDirective := ' - ' + Escaped(vName);
+
 	case self.FSkipped of
-		stSkip: vDirective := ' ' + cTAPComment + cTAPSkip + self.FSkippedReason;
-		stTodo: vDirective := ' ' + cTAPComment + cTAPTodo + self.FSkippedReason;
+		stSkip: vDirective += ' ' + cTAPComment + cTAPSkip + self.FSkippedReason;
+		stTodo: vDirective += ' ' + cTAPComment + cTAPTodo + self.FSkippedReason;
 	else
-		// vDirective already empty
 	end;
 
-	self.Print([vResult, IntToStr(self.FExecuted), ' - ', Escaped(vName), vDirective]);
+	self.Print([vResult, IntToStr(self.FExecuted), vDirective]);
 	if (not vPassed) and (self.FSkipped = stNotSkipped) then begin
 		self.PrintDiag(vName, vExpected, vGot);
 	end;
@@ -327,87 +332,87 @@ begin
 	self.FSkippedReason := vReason;
 end;
 
-procedure TTAPContext.TestPass(const vName: String);
+procedure TTAPContext.TestPass(const vName: String = '');
 begin
 	self.TestOk(True, vName);
 end;
 
-procedure TTAPContext.TestFail(const vName: String);
+procedure TTAPContext.TestFail(const vName: String = '');
 begin
 	self.TestOk(False, vName);
 end;
 
-procedure TTAPContext.TestOk(const vPassed: Boolean; const vName: String);
+procedure TTAPContext.TestOk(const vPassed: Boolean; const vName: String = '');
 begin
 	self.InternalOk(vPassed, vName, BoolToReadableStr(True), BoolToReadableStr(False));
 end;
 
-procedure TTAPContext.TestIs(const vGot, vExpected: Int64; const vName: String);
+procedure TTAPContext.TestIs(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	self.InternalOk(vGot = vExpected, vName, IntToStr(vExpected), IntToStr(vGot));
 end;
 
-procedure TTAPContext.TestIs(const vGot, vExpected: String; const vName: String);
+procedure TTAPContext.TestIs(const vGot, vExpected: String; const vName: String = '');
 begin
 	self.InternalOk(vGot = vExpected, vName, Quoted(vExpected), Quoted(vGot));
 end;
 
-procedure TTAPContext.TestIs(const vGot, vExpected: Boolean; const vName: String);
+procedure TTAPContext.TestIs(const vGot, vExpected: Boolean; const vName: String = '');
 begin
 	self.InternalOk(vGot = vExpected, vName, BoolToReadableStr(vExpected), BoolToReadableStr(vGot));
 end;
 
-procedure TTAPContext.TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String);
+procedure TTAPContext.TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
 begin
 	self.InternalOk(vGot is vExpected, vName, 'object of class ' + vExpected.ClassName, 'object of class ' + vGot.ClassName);
 end;
 
-procedure TTAPContext.TestIsnt(const vGot, vExpected: Int64; const vName: String);
+procedure TTAPContext.TestIsnt(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	self.InternalOk(not(vGot = vExpected), vName, 'not ' + IntToStr(vExpected), IntToStr(vGot));
 end;
 
-procedure TTAPContext.TestIsnt(const vGot, vExpected: String; const vName: String);
+procedure TTAPContext.TestIsnt(const vGot, vExpected: String; const vName: String = '');
 begin
 	self.InternalOk(not(vGot = vExpected), vName, 'not ' + Quoted(vExpected), Quoted(vGot));
 end;
 
-procedure TTAPContext.TestIsnt(const vGot, vExpected: Boolean; const vName: String);
+procedure TTAPContext.TestIsnt(const vGot, vExpected: Boolean; const vName: String = '');
 begin
 	self.InternalOk(not(vGot = vExpected), vName, 'not ' + BoolToReadableStr(vExpected), BoolToReadableStr(vGot));
 end;
 
-procedure TTAPContext.TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String);
+procedure TTAPContext.TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
 begin
 	self.InternalOk(not(vGot is vExpected), vName, 'not object of class ' + vExpected.ClassName, 'object of class ' + vGot.ClassName);
 end;
 
-procedure TTAPContext.TestGreater(const vGot, vExpected: Int64; const vName: String);
+procedure TTAPContext.TestGreater(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	self.InternalOk(vGot > vExpected, vName, 'more than ' + IntToStr(vExpected), IntToStr(vGot));
 end;
 
-procedure TTAPContext.TestGreater(const vGot, vExpected: Double; const vName: String);
+procedure TTAPContext.TestGreater(const vGot, vExpected: Double; const vName: String = '');
 begin
 	self.InternalOk(vGot > vExpected, vName, 'more than ' + FloatToStr(vExpected), FloatToStr(vGot));
 end;
 
-procedure TTAPContext.TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String);
+procedure TTAPContext.TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	self.InternalOk(vGot >= vExpected, vName, 'at least ' + IntToStr(vExpected), IntToStr(vGot));
 end;
 
-procedure TTAPContext.TestLesser(const vGot, vExpected: Int64; const vName: String);
+procedure TTAPContext.TestLesser(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	self.InternalOk(vGot < vExpected, vName, 'less than ' + IntToStr(vExpected), IntToStr(vGot));
 end;
 
-procedure TTAPContext.TestLesser(const vGot, vExpected: Double; const vName: String);
+procedure TTAPContext.TestLesser(const vGot, vExpected: Double; const vName: String = '');
 begin
 	self.InternalOk(vGot < vExpected, vName, 'less than ' + FloatToStr(vExpected), FloatToStr(vGot));
 end;
 
-procedure TTAPContext.TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String);
+procedure TTAPContext.TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	self.InternalOk(vGot <= vExpected, vName, 'at most ' + IntToStr(vExpected), IntToStr(vGot));
 end;
