@@ -1,4 +1,6 @@
 {
+	This program tests a Fibonacci number generator with help of subtests
+
 	build with: make examples
 	run with: prove build/fib.t
 }

@@ -11,7 +11,7 @@ test: build
 	$(TEST_RUNNER) build
 
 examples: prepare
-	for file in ex/*.t.pas; do $(FPC) $(FPC_FLAGS) $${file}; done
+	for file in ex/*.pas; do $(FPC) $(FPC_FLAGS) $${file}; done
 
 prepare:
 	mkdir -p $(BUILD_DIR)
