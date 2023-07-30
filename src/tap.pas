@@ -95,6 +95,7 @@ type
 		procedure TestLesser(const vGot, vExpected: Int64; const vName: String = ''); virtual;
 		procedure TestLesser(const vGot, vExpected: Double; const vName: String = ''); virtual;
 		procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = ''); virtual;
+		procedure TestWithin(const vGot, vExpected, vPrecision: Double; const vName: String = ''); virtual;
 
 		procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
 		procedure Plan(const vNumber: UInt32; const vReason: String = ''); virtual;
@@ -170,6 +171,11 @@ procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String =
 procedure TestLesser(const vGot, vExpected: Int64; const vName: String = '');
 procedure TestLesser(const vGot, vExpected: Double; const vName: String = '');
 procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = '');
+
+{
+	Tests whether two floating point values are within the precision of each other.
+}
+procedure TestWithin(const vGot, vExpected, vPrecision: Double; const vName: String = '');
 
 {
 	Outputs a pragma. Since pragmas are implementation-specific, no predefined
@@ -415,6 +421,16 @@ end;
 procedure TTAPContext.TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = '');
 begin
 	self.InternalOk(vGot <= vExpected, vName, 'at most ' + IntToStr(vExpected), IntToStr(vGot));
+end;
+
+procedure TTAPContext.TestWithin(const vGot, vExpected, vPrecision: Double; const vName: String = '');
+begin
+	self.InternalOk(
+		abs(vGot - vExpected) < vPrecision,
+		vName,
+		FloatToStr(vExpected) + ' +-' + FloatToStr(vPrecision),
+		FloatToStr(vGot)
+	);
 end;
 
 procedure TTAPContext.Pragma(const vPragma: String; const vStatus: Boolean = True);

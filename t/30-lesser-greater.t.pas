@@ -10,6 +10,7 @@ begin
 	TestGreater(2, 1);
 	TestGreater(1.2, 1.1);
 	TestGreaterOrEqual(2, 2);
+	TestWithin(1.51526, 1.51532, 0.0001);
 end;
 
 procedure RunTestNegative();
@@ -22,6 +23,7 @@ begin
 	TestGreater(2, 3);
 	TestGreater(1.2, 1.2);
 	TestGreaterOrEqual(1, 2);
+	TestWithin(1.5126, 1.5137, 0.001);
 end;
 
 var
@@ -34,9 +36,9 @@ begin
 	vPassedTests := TAPGlobalContext.TestsPassed;
 	TAPTester.Release;
 
-	TestIs(vTotalTests, 6, 'test count ok');
-	TestIs(vPassedTests, 6, 'passed test count ok');
-	TestIs(TAPTester.Lines.Count, 6, 'line count ok');
+	TestIs(vTotalTests, 7, 'test count ok');
+	TestIs(vPassedTests, 7, 'passed test count ok');
+	TestIs(TAPTester.Lines.Count, 7, 'line count ok');
 
 	TAPTester.Hijack;
 	RunTestNegative;
@@ -44,15 +46,16 @@ begin
 	vPassedTests := TAPGlobalContext.TestsPassed;
 	TAPTester.Release;
 
-	TestIs(vTotalTests, 8, 'test count ok');
+	TestIs(vTotalTests, 9, 'test count ok');
 	TestIs(vPassedTests, 0, 'passed test count ok');
-	TestIs(TAPTester.Lines.Count, 40, 'line count ok');
+	TestIs(TAPTester.Lines.Count, 45, 'line count ok');
 	TestIs(TAPTester.Lines[2], '# expected: less than 2', 'test 1 diag ok');
 	TestIs(TAPTester.Lines[12], '# expected: less than 1.2', 'test 3 diag ok');
 	TestIs(TAPTester.Lines[17], '# expected: at most 1', 'test 4 diag ok');
 	TestIs(TAPTester.Lines[22], '# expected: more than 2', 'test 5 diag ok');
 	TestIs(TAPTester.Lines[32], '# expected: more than 1.2', 'test 7 diag ok');
 	TestIs(TAPTester.Lines[37], '# expected: at least 2', 'test 8 diag ok');
+	TestIs(TAPTester.Lines[42], '# expected: 1.5137 +-0.001', 'test 9 diag ok');
 
 	DoneTesting;
 end.

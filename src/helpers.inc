@@ -95,6 +95,10 @@ begin
 	TAPGlobalContext.TestLesserOrEqual(vGot, vExpected, vName);
 end;
 
+procedure TestWithin(const vGot, vExpected, vPrecision: Double; const vName: String = '');
+begin
+	TAPGlobalContext.TestWithin(vGot, vExpected, vPrecision, vName);
+end;
 
 procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
 begin
