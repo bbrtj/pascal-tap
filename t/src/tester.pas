@@ -11,10 +11,8 @@ type
 	strict private
 		FOutput: TStringList;
 		FLastContext: TTAPContext;
-		FExited: Boolean;
 
 		procedure PrintToVariable(const vLine: String);
-		procedure ExitToVariable();
 
 	public
 		constructor Create();
@@ -24,7 +22,6 @@ type
 		procedure Release();
 
 		property Lines: TStringList read FOutput;
-		property Exited: Boolean read FExited;
 	end;
 
 var
@@ -35,11 +32,6 @@ implementation
 procedure TTAPTester.PrintToVariable(const vLine: String);
 begin
 	self.FOutput.Append(vLine);
-end;
-
-procedure TTAPTester.ExitToVariable();
-begin
-	self.FExited := True;
 end;
 
 constructor TTAPTester.Create();
@@ -58,9 +50,8 @@ var
 begin
 	vNewContext := TTAPContext.Create;
 	self.FOutput.Clear;
-	self.FExited := False;
 	vNewContext.Printer := @self.PrintToVariable;
-	vNewContext.Stopper := @self.ExitToVariable;
+	vNewContext.BailoutBehavior := btException;
 
 	self.FLastContext := TAPGlobalContext;
 	TAPGlobalContext := vNewContext;

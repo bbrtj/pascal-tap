@@ -24,8 +24,10 @@ uses sysutils;
 
 type
 	TSkippedType = (stNotSkipped, stSkip, stTodo);
+	TBailoutType = (btHalt, btException);
 	TTAPPrinter = procedure(const vLine: String) of Object;
-	TTAPStopper = procedure() of Object;
+
+	EBailout = class(Exception);
 
 	{
 		TTAPContext is the main class which keeps track of tests performed and
@@ -52,13 +54,12 @@ type
 		FPassed: UInt32;
 		FPlanned: Boolean;
 		FPlan: UInt32;
-		FSkipped: TSkippedType;
 
 		FPrinter: TTAPPrinter;
-		FStopper: TTAPStopper;
+		FSkipped: TSkippedType;
+		FBailout: TBailoutType;
 
 		procedure PrintToStandardOutput(const vLine: String);
-		procedure ExitProgram();
 
 		procedure Print(vVals: Array of String);
 		procedure PrintDiag(const vName, vExpected, vGot: String);
@@ -87,7 +88,7 @@ type
 		function TestsPassed(): UInt32;
 
 		property Printer: TTAPPrinter read FPrinter write FPrinter;
-		property Stopper: TTAPStopper read FStopper write FStopper;
+		property BailoutBehavior: TBailoutType read FBailout write FBailout;
 	end;
 
 var
@@ -185,11 +186,6 @@ begin
 	writeln(vLine);
 end;
 
-procedure TTAPContext.ExitProgram();
-begin
-	halt(255);
-end;
-
 procedure TTAPContext.Print(vVals: Array of String);
 var
 	vStr: String = '';
@@ -218,11 +214,11 @@ begin
 
 	if vParent <> nil then begin
 		self.FPrinter := vParent.FPrinter;
-		self.FStopper := vParent.FStopper;
+		self.FBailout := vParent.FBailout;
 	end
 	else begin
 		self.FPrinter := @self.PrintToStandardOutput;
-		self.FStopper := @self.ExitProgram;
+		self.FBailout := btHalt;
 	end;
 end;
 
@@ -344,7 +340,11 @@ end;
 procedure TTAPContext.BailOut(const vReason: String);
 begin
 	self.Print([cTAPBailOut, Escaped(vReason)]);
-	self.FStopper();
+
+	case self.FBailout of
+		btHalt: halt(255);
+		btException: raise EBailout.Create(vReason);
+	end;
 end;
 
 function TTAPContext.SubtestBegin(const vName: String): TTAPContext;
