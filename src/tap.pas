@@ -234,7 +234,7 @@ begin
 	if self.FSkipped <> stNotSkipped then exit;
 
 	if length(vText) > 0 then
-		self.Print([cTAPComment, Escaped(vText)])
+		self.Print([cTAPComment, vText])
 	else
 		self.Print([]);
 end;
@@ -329,7 +329,7 @@ begin
 		exit;
 	end;
 
-	vFullReason += Escaped(vReason);
+	vFullReason += vReason;
 	self.Plan(0, vFullReason);
 	self.FSkipped := vType;
 end;
@@ -358,7 +358,7 @@ begin
 	result := TTAPContext.Create(self);
 	result.FName := vName;
 
-	self.Print([cTAPComment, cTAPSubtest, Escaped(vName)]);
+	self.Print([cTAPComment, cTAPSubtest, vName]);
 end;
 
 function TTAPContext.SubtestEnd(): TTAPContext;
