@@ -64,28 +64,30 @@ type
 
 		procedure Print(vVals: Array of String);
 		procedure PrintDiag(const vName, vExpected, vGot: String);
-		procedure InternalOk(const vPassed: Boolean; const vName, vExpected, vGot: String);
+
+	protected
+		procedure InternalOk(const vPassed: Boolean; const vName, vExpected, vGot: String); virtual;
 
 	public
 		constructor Create(const vParent: TTAPContext = nil);
 
 		procedure Note(const vText: String);
 
-		procedure Skip(const vSkip: TSkippedType; const vReason: String);
-		procedure TestPass(const vName: String);
-		procedure TestFail(const vName: String);
-		procedure TestOk(const vPassed: Boolean; const vName: String);
-		procedure TestIs(const vGot, vExpected: Int64; const vName: String);
-		procedure TestIs(const vGot, vExpected: String; const vName: String);
-		procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
+		procedure Skip(const vSkip: TSkippedType; const vReason: String); virtual;
+		procedure TestPass(const vName: String); virtual;
+		procedure TestFail(const vName: String); virtual;
+		procedure TestOk(const vPassed: Boolean; const vName: String); virtual;
+		procedure TestIs(const vGot, vExpected: Int64; const vName: String); virtual;
+		procedure TestIs(const vGot, vExpected: String; const vName: String); virtual;
+		procedure TestIs(const vGot, vExpected: Boolean; const vName: String); virtual;
 
-		procedure Plan(const vNumber: UInt32; const vReason: String = '');
-		procedure Plan(const vSkip: TSkippedType; const vReason: String);
-		procedure DoneTesting();
-		procedure BailOut(const vReason: String);
+		procedure Plan(const vNumber: UInt32; const vReason: String = ''); virtual;
+		procedure Plan(const vSkip: TSkippedType; const vReason: String); virtual;
+		procedure DoneTesting(); virtual;
+		procedure BailOut(const vReason: String); virtual;
 
-		function SubtestBegin(const vName: String): TTAPContext;
-		function SubtestEnd(): TTAPContext;
+		function SubtestBegin(const vName: String): TTAPContext; virtual;
+		function SubtestEnd(): TTAPContext; virtual;
 
 		function TestsExecuted(): UInt32;
 		function TestsPassed(): UInt32;
