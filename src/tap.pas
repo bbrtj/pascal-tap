@@ -324,7 +324,7 @@ begin
 
 	case vType of
 		stSkip: vFullReason += cTAPSkip;
-		stTodo: vFullReason += cTAPTodo;
+		stTodo: vFullReason += cTAPSkip + cTAPTodo;
 	else
 		exit;
 	end;
