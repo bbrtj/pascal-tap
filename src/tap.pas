@@ -21,6 +21,7 @@ interface
 uses sysutils;
 
 type
+	TObjectClass = class of TObject;
 	TSkippedType = (stNotSkipped, stSkip, stTodo);
 	TBailoutType = (btHalt, btException);
 	TTAPPrinter = procedure(const vLine: String) of Object;
@@ -80,6 +81,7 @@ type
 		procedure TestIs(const vGot, vExpected: Int64; const vName: String); virtual;
 		procedure TestIs(const vGot, vExpected: String; const vName: String); virtual;
 		procedure TestIs(const vGot, vExpected: Boolean; const vName: String); virtual;
+		procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String); virtual;
 
 		procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
 		procedure Plan(const vNumber: UInt32; const vReason: String = ''); virtual;
@@ -136,6 +138,7 @@ procedure TestOk(const vPassed: Boolean; const vName: String);
 procedure TestIs(const vGot, vExpected: Int64; const vName: String);
 procedure TestIs(const vGot, vExpected: String; const vName: String);
 procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
+procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String);
 
 {
 	Outputs a pragma. Since pragmas are implementation-specific, no predefined
@@ -323,6 +326,11 @@ begin
 	self.InternalOk(vGot = vExpected, vName, BoolToReadableStr(vExpected), BoolToReadableStr(vGot));
 end;
 
+procedure TTAPContext.TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String);
+begin
+	self.InternalOk(vGot is vExpected, vName, 'object of class ' + vExpected.ClassName, 'object of class ' + vGot.ClassName);
+end;
+
 procedure TTAPContext.Pragma(const vPragma: String; const vStatus: Boolean = True);
 var
 	vPragmaStatus: Char;
@@ -462,6 +470,11 @@ begin
 end;
 
 procedure TestIs(const vGot, vExpected: Boolean; const vName: String);
+begin
+	TAPGlobalContext.TestIs(vGot, vExpected, vName);
+end;
+
+procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String);
 begin
 	TAPGlobalContext.TestIs(vGot, vExpected, vName);
 end;
