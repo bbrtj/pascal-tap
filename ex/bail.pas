@@ -1,5 +1,5 @@
 {
-	This is an example of incorrect test code, which tries to nest subtests.
+	This is an example of incorrect test code, which tries to plan twice.
 	The program will produce the bailout TAP output.
 
 	Bailout behavior can be controlled with BailoutBehavior of the global TAPGlobalContext.
@@ -18,15 +18,9 @@ begin
 	// program. The exception will be of type EBailout.
 	// TAPGlobalContext.BailoutBehavior := btException;
 
-	SubtestBegin('one level down');
-
-		SubtestBegin('two levels down');
-
-			TestPass('always passing, but never reached');
-
-		SubtestEnd;
-
-	SubtestEnd;
+	Plan(1);
+	Plan(1);
+	TestPass('always passing, but never reached');
 
 	DoneTesting;
 end.

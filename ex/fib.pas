@@ -33,10 +33,10 @@ begin
 	TestIs(GetNextFibonacciNumber(), 8, 'Fibonacci number 5 ok');
 	SubtestEnd;
 
-	// You can mark subtest as skipped or todo, which will not produce any
+	// You can mark subtest as skipped, which will not produce any
 	// output for its tests (even if implemented)
 	SubtestBegin('Should return the sixth Fibonacci number');
-	Plan(stTodo, 'procrastinating...');
+	Skip(stSkipAll, 'procrastinating...');
 	TestIs(GetNextFibonacciNumber(), 12, 'did I get this right?');
 	SubtestEnd;
 
