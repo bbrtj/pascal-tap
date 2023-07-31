@@ -17,87 +17,172 @@ end;
 
 procedure TestPass(const vName: String = '');
 begin
-	TAPGlobalContext.Ok(True, vName, '', '');
+	TAPGlobalContext.Ok(
+		True,
+		vName,
+		'',
+		''
+	);
 end;
 
 procedure TestFail(const vName: String = '');
 begin
-	TAPGlobalContext.Ok(False, vName, '(nothing)', 'failure');
+	TAPGlobalContext.Ok(
+		False,
+		vName,
+		'(nothing)',
+		'failure'
+	);
 end;
 
 procedure TestOk(const vPassed: Boolean; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vPassed, vName, BoolToReadableStr(True), BoolToReadableStr(False));
+	TAPGlobalContext.Ok(
+		vPassed,
+		vName,
+		BoolToReadableStr(True),
+		BoolToReadableStr(False)
+	);
 end;
 
 procedure TestIs(const vGot, vExpected: Int64; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot = vExpected, vName, IntToStr(vExpected), IntToStr(vGot));
+	TAPGlobalContext.Ok(
+		vGot = vExpected,
+		vName,
+		IntToStr(vExpected),
+		IntToStr(vGot)
+	);
 end;
 
 procedure TestIs(const vGot, vExpected: String; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot = vExpected, vName, Quoted(vExpected), Quoted(vGot));
+	TAPGlobalContext.Ok(
+		vGot = vExpected,
+		vName,
+		Quoted(vExpected),
+		Quoted(vGot)
+	);
 end;
 
 procedure TestIs(const vGot, vExpected: Boolean; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot = vExpected, vName, BoolToReadableStr(vExpected), BoolToReadableStr(vGot));
+	TAPGlobalContext.Ok(
+		vGot = vExpected,
+		vName,
+		BoolToReadableStr(vExpected),
+		BoolToReadableStr(vGot)
+	);
 end;
 
 procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot is vExpected, vName, 'object of class ' + vExpected.ClassName, 'object of class ' + vGot.ClassName);
+	TAPGlobalContext.Ok(
+		vGot is vExpected,
+		vName,
+		'object of class ' + vExpected.ClassName,
+		'object of class ' + vGot.ClassName
+	);
 end;
 
 procedure TestIsnt(const vGot, vExpected: Int64; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(not(vGot = vExpected), vName, 'not ' + IntToStr(vExpected), IntToStr(vGot));
+	TAPGlobalContext.Ok(
+		not(vGot = vExpected),
+		vName,
+		'not ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
 end;
 
 procedure TestIsnt(const vGot, vExpected: String; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(not(vGot = vExpected), vName, 'not ' + Quoted(vExpected), Quoted(vGot));
+	TAPGlobalContext.Ok(
+		not(vGot = vExpected),
+		vName,
+		'not ' + Quoted(vExpected),
+		Quoted(vGot)
+	);
 end;
 
 procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(not(vGot = vExpected), vName, 'not ' + BoolToReadableStr(vExpected), BoolToReadableStr(vGot));
+	TAPGlobalContext.Ok(
+		not(vGot = vExpected),
+		vName,
+		'not ' + BoolToReadableStr(vExpected),
+		BoolToReadableStr(vGot)
+	);
 end;
 
 procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(not(vGot is vExpected), vName, 'not object of class ' + vExpected.ClassName, 'object of class ' + vGot.ClassName);
+	TAPGlobalContext.Ok(
+		not(vGot is vExpected),
+		vName,
+		'not object of class ' + vExpected.ClassName,
+		'object of class ' + vGot.ClassName
+	);
 end;
 
 procedure TestGreater(const vGot, vExpected: Int64; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot > vExpected, vName, 'more than ' + IntToStr(vExpected), IntToStr(vGot));
+	TAPGlobalContext.Ok(
+		vGot > vExpected,
+		vName,
+		'more than ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
 end;
 
 procedure TestGreater(const vGot, vExpected: Double; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot > vExpected, vName, 'more than ' + FloatToStr(vExpected), FloatToStr(vGot));
+	TAPGlobalContext.Ok(
+		vGot > vExpected,
+		vName,
+		'more than ' + FloatToStr(vExpected),
+		FloatToStr(vGot)
+	);
 end;
 
 procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot >= vExpected, vName, 'at least ' + IntToStr(vExpected), IntToStr(vGot));
+	TAPGlobalContext.Ok(
+		vGot >= vExpected,
+		vName,
+		'at least ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
 end;
 
 procedure TestLesser(const vGot, vExpected: Int64; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot < vExpected, vName, 'less than ' + IntToStr(vExpected), IntToStr(vGot));
+	TAPGlobalContext.Ok(
+		vGot < vExpected,
+		vName,
+		'less than ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
 end;
 
 procedure TestLesser(const vGot, vExpected: Double; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot < vExpected, vName, 'less than ' + FloatToStr(vExpected), FloatToStr(vGot));
+	TAPGlobalContext.Ok(
+		vGot < vExpected,
+		vName,
+		'less than ' + FloatToStr(vExpected),
+		FloatToStr(vGot)
+	);
 end;
 
 procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = '');
 begin
-	TAPGlobalContext.Ok(vGot <= vExpected, vName, 'at most ' + IntToStr(vExpected), IntToStr(vGot));
+	TAPGlobalContext.Ok(
+		vGot <= vExpected,
+		vName,
+		'at most ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
 end;
 
 procedure TestWithin(const vGot, vExpected, vPrecision: Double; const vName: String = '');

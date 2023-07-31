@@ -212,16 +212,20 @@ end;
 
 function BoolToReadableStr(const vBool: Boolean): String;
 begin
-	if vBool then result := 'True'
-	else result := 'False';
+	if vBool then
+		result := 'True'
+	else
+		result := 'False';
 end;
 
 // Object interface
 
 procedure TTAPContext.PrintToStandardOutput(const vLine: String; const vDiag: Boolean);
 begin
-	if vDiag then writeln(StdErr, vLine)
-	else writeln(vLine);
+	if vDiag then
+		writeln(StdErr, vLine)
+	else
+		writeln(vLine);
 end;
 
 procedure TTAPContext.Print(vVals: Array of String; const vDiag: Boolean = False);
@@ -299,8 +303,10 @@ begin
 
 	self.FExecuted += 1;
 
-	if vPassed then self.FPassed += 1
-	else vResult := cTAPNot + vResult;
+	if vPassed then
+		self.FPassed += 1
+	else
+		vResult := cTAPNot + vResult;
 
 	if length(vName) > 0 then
 		vDirective := ' - ' + Escaped(vName);
@@ -324,8 +330,10 @@ procedure TTAPContext.Pragma(const vPragma: String; const vStatus: Boolean = Tru
 var
 	vPragmaStatus: Char;
 begin
-	if vStatus then vPragmaStatus := '+'
-	else vPragmaStatus := '-';
+	if vStatus then
+		vPragmaStatus := '+'
+	else
+		vPragmaStatus := '-';
 
 	self.Print([cTAPPragma, vPragmaStatus, vPragma]);
 end;
