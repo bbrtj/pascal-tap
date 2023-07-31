@@ -15,7 +15,12 @@ begin
 	TAPGlobalContext.Fatal := vType;
 end;
 
-procedure Skip(const vSkip: TSkippedType; const vReason: String);
+procedure Skip();
+begin
+	TAPGlobalContext.Skip(stSkip, '');
+end;
+
+procedure Skip(const vSkip: TSkippedType; const vReason: String = '');
 begin
 	TAPGlobalContext.Skip(vSkip, vReason);
 end;
@@ -208,11 +213,6 @@ end;
 procedure Plan(const vNumber: UInt32; const vReason: String = '');
 begin
 	TAPGlobalContext.Plan(vNumber, vReason);
-end;
-
-procedure Plan(const vType: TSkippedType; const vReason: String);
-begin
-	TAPGlobalContext.Plan(vType, vReason);
 end;
 
 procedure DoneTesting();
