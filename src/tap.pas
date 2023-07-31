@@ -22,8 +22,8 @@ uses sysutils;
 
 type
 	TObjectClass = class of TObject;
-	TSkippedType = (stNotSkipped, stSkip, stTodo, stSkipAll);
-	TFatalType = (ftNotFatal, ftOne, ftAll);
+	TSkippedType = (stNoSkip, stSkip, stTodo, stSkipAll);
+	TFatalType = (ftNoFatal, ftFatalSingle, ftFatalAll);
 	TBailoutType = (btHalt, btException);
 	TTAPPrinter = procedure(const vLine: String; const vDiag: Boolean) of Object;
 
@@ -106,7 +106,7 @@ procedure Diag(const vText: String);
 	Marks the next test fatal. Not passing the test will cause the bailout.
 	Argument can be passed to turn fatal on or off on all following tests.
 }
-procedure Fatal(const vType: TFatalType = ftOne);
+procedure Fatal(const vType: TFatalType = ftFatalSingle);
 
 {
 	Skips the next test executed (just one). Can also todo the next test or
@@ -277,9 +277,9 @@ begin
 		self.FBailoutBehavior := vParent.FBailoutBehavior;
 	end
 	else begin
-		self.FSkipped := stNotSkipped;
+		self.FSkipped := stNoSkip;
 		self.FSkippedReason := '';
-		self.FFatal := ftNotFatal;
+		self.FFatal := ftNoFatal;
 
 		self.FPrinter := @self.PrintToStandardOutput;
 		self.FBailoutBehavior := btHalt;
@@ -317,7 +317,7 @@ var
 	vSkipped: Boolean;
 begin
 	if self.FSkipped = stSkipAll then exit;
-	vSkipped := self.FSkipped <> stNotSkipped;
+	vSkipped := self.FSkipped <> stNoSkip;
 
 	self.FExecuted += 1;
 	self.FPassed += Integer(vPassed);
@@ -341,10 +341,10 @@ begin
 		self.PrintDiag(vName, vExpected, vGot);
 	end;
 
-	self.Skip(stNotSkipped, '');
+	self.Skip(stNoSkip, '');
 
-	if self.FFatal <> ftNotFatal then begin
-		if self.FFatal = ftOne then self.FFatal := ftNotFatal;
+	if self.FFatal <> ftNoFatal then begin
+		if self.FFatal = ftFatalSingle then self.FFatal := ftNoFatal;
 		if (not vPassed) and (not vSkipped) then self.BailOut('fatal test failure');
 	end;
 end;

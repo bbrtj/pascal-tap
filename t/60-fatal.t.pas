@@ -32,7 +32,7 @@ begin
 	result := False;
 
 	try
-		Fatal(ftAll);
+		Fatal(ftFatalAll);
 		TestOk(True);
 		TestOk(False);
 	except
@@ -45,9 +45,9 @@ begin
 	result := False;
 
 	try
-		Fatal(ftAll);
+		Fatal(ftFatalAll);
 		TestOk(True);
-		Fatal(ftNotFatal);
+		Fatal(ftNoFatal);
 		TestOk(False);
 	except
 		on EBailout do result := True;

@@ -10,7 +10,7 @@ begin
 	TAPGlobalContext.Comment(vText, True);
 end;
 
-procedure Fatal(const vType: TFatalType = ftOne);
+procedure Fatal(const vType: TFatalType = ftFatalSingle);
 begin
 	TAPGlobalContext.Fatal := vType;
 end;
