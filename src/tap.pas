@@ -72,7 +72,7 @@ type
 		procedure Skip(const vSkip: TSkippedType; const vReason: String); virtual;
 		procedure Ok(const vPassed: Boolean; const vName, vExpected, vGot: String); virtual;
 
-		procedure Comment(const vText: String; const vDiag: Boolean); virtual;
+		procedure Comment(const vText: String; const vDiag: Boolean = False); virtual;
 		procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
 		procedure Plan(const vNumber: UInt32; const vReason: String = ''; const vSkipIfPlanned: Boolean = False); virtual;
 		procedure Plan(const vSkip: TSkippedType; const vReason: String); virtual;
@@ -277,7 +277,7 @@ begin
 	end;
 end;
 
-procedure TTAPContext.Comment(const vText: String; const vDiag: Boolean);
+procedure TTAPContext.Comment(const vText: String; const vDiag: Boolean = False);
 begin
 	if self.FAllSkipped <> stNotSkipped then exit;
 
@@ -399,7 +399,7 @@ begin
 	result := TTAPContext.Create(self);
 	result.FName := vName;
 
-	self.Print([cTAPComment, cTAPSubtest, vName]);
+	self.Comment(cTAPSubtest + vName);
 end;
 
 function TTAPContext.SubtestEnd(): TTAPContext;

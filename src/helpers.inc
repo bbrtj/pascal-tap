@@ -2,7 +2,7 @@
 
 procedure Note(const vText: String);
 begin
-	TAPGlobalContext.Comment(vText, False);
+	TAPGlobalContext.Comment(vText);
 end;
 
 procedure Diag(const vText: String);
