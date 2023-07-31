@@ -23,6 +23,7 @@ uses sysutils;
 type
 	TObjectClass = class of TObject;
 	TSkippedType = (stNotSkipped, stSkip, stTodo);
+	TFatalType = (ftNotFatal, ftOne, ftAll);
 	TBailoutType = (btHalt, btException);
 	TTAPPrinter = procedure(const vLine: String; const vDiag: Boolean) of Object;
 
@@ -58,6 +59,7 @@ type
 		FPrinter: TTAPPrinter;
 		FAllSkipped: TSkippedType;
 		FSkipped: TSkippedType;
+		FFatal: TFatalType;
 		FSkippedReason: String;
 		FBailoutBehavior: TBailoutType;
 
@@ -83,6 +85,7 @@ type
 
 		property TestsExecuted: UInt32 read FExecuted;
 		property TestsPassed: UInt32 read FPassed;
+		property Fatal: TFatalType read FFatal write FFatal;
 		property Printer: TTAPPrinter read FPrinter write FPrinter;
 		property BailoutBehavior: TBailoutType read FBailoutBehavior write FBailoutBehavior;
 	end;
@@ -99,6 +102,12 @@ procedure Note(const vText: String);
 	Adds diagnostics to the TAP output as a comment. Will be outputed to standard error.
 }
 procedure Diag(const vText: String);
+
+{
+	Marks the next test fatal. Not passing the test will cause the bailout.
+	Argument can be passed to turn fatal on or off on all following tests.
+}
+procedure Fatal(const vType: TFatalType = ftOne);
 
 {
 	Skips the next test executed (just one)
@@ -265,6 +274,7 @@ begin
 	self.FPlan := 0;
 	self.FAllSkipped := stNotSkipped;
 	self.FSkipped := stNotSkipped;
+	self.FFatal := ftNotFatal;
 	self.FSkippedReason := '';
 
 	if vParent <> nil then begin
@@ -323,6 +333,11 @@ begin
 
 	self.FSkipped := stNotSkipped;
 	self.FSkippedReason := '';
+
+	if self.FFatal <> ftNotFatal then begin
+		if self.FFatal = ftOne then self.FFatal := ftNotFatal;
+		if not vPassed then self.BailOut('fatal test failure');
+	end;
 end;
 
 procedure TTAPContext.Pragma(const vPragma: String; const vStatus: Boolean = True);

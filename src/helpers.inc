@@ -10,6 +10,11 @@ begin
 	TAPGlobalContext.Comment(vText, True);
 end;
 
+procedure Fatal(const vType: TFatalType = ftOne);
+begin
+	TAPGlobalContext.Fatal := vType;
+end;
+
 procedure Skip(const vSkip: TSkippedType; const vReason: String);
 begin
 	TAPGlobalContext.Skip(vSkip, vReason);
