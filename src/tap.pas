@@ -11,6 +11,9 @@ interface
 
 uses TAPCore, sysutils;
 
+type
+	TObjectClass = class of TObject;
+
 {
 	Adds a note to the TAP output as a comment in a new line
 }

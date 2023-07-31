@@ -24,7 +24,6 @@ interface
 uses sysutils;
 
 type
-	TObjectClass = class of TObject;
 	TSkippedType = (stNoSkip, stSkip, stTodo, stSkipAll);
 	TFatalType = (ftNoFatal, ftFatalSingle, ftFatalAll);
 	TBailoutType = (btHalt, btException);
