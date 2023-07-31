@@ -59,7 +59,7 @@ type
 		FAllSkipped: TSkippedType;
 		FSkipped: TSkippedType;
 		FSkippedReason: String;
-		FBailout: TBailoutType;
+		FBailoutBehavior: TBailoutType;
 
 		procedure PrintToStandardOutput(const vLine: String; const vDiag: Boolean);
 
@@ -84,7 +84,7 @@ type
 		property TestsExecuted: UInt32 read FExecuted;
 		property TestsPassed: UInt32 read FPassed;
 		property Printer: TTAPPrinter read FPrinter write FPrinter;
-		property BailoutBehavior: TBailoutType read FBailout write FBailout;
+		property BailoutBehavior: TBailoutType read FBailoutBehavior write FBailoutBehavior;
 	end;
 
 var
@@ -269,11 +269,11 @@ begin
 
 	if vParent <> nil then begin
 		self.FPrinter := vParent.FPrinter;
-		self.FBailout := vParent.FBailout;
+		self.FBailoutBehavior := vParent.FBailoutBehavior;
 	end
 	else begin
 		self.FPrinter := @self.PrintToStandardOutput;
-		self.FBailout := btHalt;
+		self.FBailoutBehavior := btHalt;
 	end;
 end;
 
@@ -385,7 +385,7 @@ begin
 	// level (compatibility with TAP 13)
 	self.FPrinter(cTAPBailOut + Escaped(vReason), False);
 
-	case self.FBailout of
+	case self.FBailoutBehavior of
 		btHalt: halt(255);
 		btException: raise EBailout.Create(vReason);
 	end;
