@@ -420,7 +420,8 @@ initialization
 	TAPGlobalContext := TTAPContext.Create;
 
 finalization
-	TAPGlobalContext.Free;
+	if TAPGlobalContext <> nil then
+		TAPGlobalContext.Free;
 
 end.
 
