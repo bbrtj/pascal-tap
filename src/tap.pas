@@ -69,12 +69,10 @@ type
 	public
 		constructor Create(const vParent: TTAPContext = nil);
 
-		procedure Note(const vText: String);
-		procedure Diag(const vText: String);
-
 		procedure Skip(const vSkip: TSkippedType; const vReason: String); virtual;
 		procedure Ok(const vPassed: Boolean; const vName, vExpected, vGot: String); virtual;
 
+		procedure Comment(const vText: String; const vDiag: Boolean); virtual;
 		procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
 		procedure Plan(const vNumber: UInt32; const vReason: String = ''; const vSkipIfPlanned: Boolean = False); virtual;
 		procedure Plan(const vSkip: TSkippedType; const vReason: String); virtual;
@@ -244,12 +242,13 @@ end;
 procedure TTAPContext.PrintDiag(const vName, vExpected, vGot: String);
 begin
 	if length(vName) > 0 then
-		self.Diag('Failed test ' + Quoted(vName))
+		self.Comment('Failed test ' + Quoted(vName), True)
 	else
-		self.Diag('Failed test');
-	self.Diag('expected: ' + vExpected);
-	self.Diag('     got: ' + vGot);
-	self.Diag('');
+		self.Comment('Failed test', True);
+
+	self.Comment('expected: ' + vExpected, True);
+	self.Comment('     got: ' + vGot, True);
+	self.Comment('', True);
 end;
 
 constructor TTAPContext.Create(const vParent: TTAPContext = nil);
@@ -275,24 +274,14 @@ begin
 	end;
 end;
 
-procedure TTAPContext.Note(const vText: String);
+procedure TTAPContext.Comment(const vText: String; const vDiag: Boolean);
 begin
 	if self.FAllSkipped <> stNotSkipped then exit;
 
 	if length(vText) > 0 then
-		self.Print([cTAPComment, vText])
+		self.Print([cTAPComment, vText], vDiag)
 	else
-		self.Print([]);
-end;
-
-procedure TTAPContext.Diag(const vText: String);
-begin
-	if self.FAllSkipped <> stNotSkipped then exit;
-
-	if length(vText) > 0 then
-		self.Print([cTAPComment, vText], True)
-	else
-		self.Print([], True);
+		self.Print([], vDiag);
 end;
 
 procedure TTAPContext.Skip(const vSkip: TSkippedType; const vReason: String);

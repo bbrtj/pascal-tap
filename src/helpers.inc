@@ -2,12 +2,12 @@
 
 procedure Note(const vText: String);
 begin
-	TAPGlobalContext.Note(vText);
+	TAPGlobalContext.Comment(vText, False);
 end;
 
 procedure Diag(const vText: String);
 begin
-	TAPGlobalContext.Diag(vText);
+	TAPGlobalContext.Comment(vText, True);
 end;
 
 procedure Skip(const vSkip: TSkippedType; const vReason: String);
