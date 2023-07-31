@@ -1,3 +1,8 @@
+{
+	This unit provides helpers for producing TAP output. Using its code you can
+	easily add your own helpers in the same manner in another unit like
+	CustomTAP.
+}
 unit TAP;
 
 {$mode objfpc}{$H+}{$J-}

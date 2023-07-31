@@ -11,6 +11,9 @@
 
 	Missing TAP v14 features:
 	- YAML diagnostics
+
+	This unit contains the internals of this TAP implementation. For normal
+	usage, see TAP unit.
 }
 unit TAPCore;
 
