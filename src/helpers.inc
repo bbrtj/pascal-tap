@@ -5,6 +5,11 @@ begin
 	TAPGlobalContext.Note(vText);
 end;
 
+procedure Diag(const vText: String);
+begin
+	TAPGlobalContext.Diag(vText);
+end;
+
 procedure Skip(const vSkip: TSkippedType; const vReason: String);
 begin
 	TAPGlobalContext.Skip(vSkip, vReason);

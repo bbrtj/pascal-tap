@@ -48,14 +48,15 @@ begin
 
 	TestIs(vTotalTests, 9, 'test count ok');
 	TestIs(vPassedTests, 0, 'passed test count ok');
-	TestIs(TAPTester.Lines.Count, 45, 'line count ok');
-	TestIs(TAPTester.Lines[2], '# expected: less than 2', 'test 1 diag ok');
-	TestIs(TAPTester.Lines[12], '# expected: less than 1.2', 'test 3 diag ok');
-	TestIs(TAPTester.Lines[17], '# expected: at most 1', 'test 4 diag ok');
-	TestIs(TAPTester.Lines[22], '# expected: more than 2', 'test 5 diag ok');
-	TestIs(TAPTester.Lines[32], '# expected: more than 1.2', 'test 7 diag ok');
-	TestIs(TAPTester.Lines[37], '# expected: at least 2', 'test 8 diag ok');
-	TestIs(TAPTester.Lines[42], '# expected: 1.5137 +-0.001', 'test 9 diag ok');
+	TestIs(TAPTester.Lines.Count, 9, 'line count ok');
+	TestIs(TAPTester.DiagLines.Count, 36, 'diag line count ok');
+	TestIs(TAPTester.DiagLines[1], '# expected: less than 2', 'test 1 diag ok');
+	TestIs(TAPTester.DiagLines[9], '# expected: less than 1.2', 'test 3 diag ok');
+	TestIs(TAPTester.DiagLines[13], '# expected: at most 1', 'test 4 diag ok');
+	TestIs(TAPTester.DiagLines[17], '# expected: more than 2', 'test 5 diag ok');
+	TestIs(TAPTester.DiagLines[25], '# expected: more than 1.2', 'test 7 diag ok');
+	TestIs(TAPTester.DiagLines[29], '# expected: at least 2', 'test 8 diag ok');
+	TestIs(TAPTester.DiagLines[33], '# expected: 1.5137 +-0.001', 'test 9 diag ok');
 
 	DoneTesting;
 end.

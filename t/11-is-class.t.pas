@@ -47,15 +47,18 @@ begin
 	TestIs(vCousin, TC1, 'negative case 2 ok');
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 10, 'line count ok');
+	TestIs(TAPTester.Lines.Count, 2, 'line count ok');
+	TestIs(TAPTester.DiagLines.Count, 8, 'diag line count ok');
+
 	TestIs(TAPTester.Lines[0], 'not ok 1 - negative case 1 ok', 'negative class 1 test ok');
-	TestIs(TAPTester.Lines[1], '# Failed test ''negative case 1 ok''', 'negative class 1 test name ok');
-	TestIs(TAPTester.Lines[2], '# expected: object of class TC3', 'negative class 1 test diag ok');
-	TestIs(TAPTester.Lines[3], '#      got: object of class TC2', 'negative class 1 test diag ok');
-	TestIs(TAPTester.Lines[5], 'not ok 2 - negative case 2 ok', 'negative class 2 test ok');
-	TestIs(TAPTester.Lines[6], '# Failed test ''negative case 2 ok''', 'negative class 2 test name ok');
-	TestIs(TAPTester.Lines[7], '# expected: object of class TC1', 'negative class 2 test diag ok');
-	TestIs(TAPTester.Lines[8], '#      got: object of class TC3', 'negative class 2 test diag ok');
+	TestIs(TAPTester.Lines[1], 'not ok 2 - negative case 2 ok', 'negative class 2 test ok');
+
+	TestIs(TAPTester.DiagLines[0], '# Failed test ''negative case 1 ok''', 'negative class 1 test name ok');
+	TestIs(TAPTester.DiagLines[1], '# expected: object of class TC3', 'negative class 1 test diag ok');
+	TestIs(TAPTester.DiagLines[2], '#      got: object of class TC2', 'negative class 1 test diag ok');
+	TestIs(TAPTester.DiagLines[4], '# Failed test ''negative case 2 ok''', 'negative class 2 test name ok');
+	TestIs(TAPTester.DiagLines[5], '# expected: object of class TC1', 'negative class 2 test diag ok');
+	TestIs(TAPTester.DiagLines[6], '#      got: object of class TC3', 'negative class 2 test diag ok');
 
 	DoneTesting;
 end.

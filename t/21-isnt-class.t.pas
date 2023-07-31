@@ -18,9 +18,10 @@ begin
 	TestIsnt(vParent, TC1, 'TC1 ok');
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 5, 'line count ok');
+	TestIs(TAPTester.Lines.Count, 1, 'line count ok');
+	TestIs(TAPTester.DiagLines.Count, 4, 'diag line count ok');
 	TestIs(TAPTester.Lines[0], 'not ok 1 - TC1 ok', 'class 1 test ok');
-	TestIs(TAPTester.Lines[2], '# expected: not object of class TC1', 'class 1 test ok');
+	TestIs(TAPTester.DiagLines[1], '# expected: not object of class TC1', 'class 1 test ok');
 
 	TAPTester.Hijack;
 	TestIsnt(vParent, TC3, 'negative case 1 ok');

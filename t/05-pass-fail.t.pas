@@ -13,9 +13,13 @@ begin
 	RunTest;
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 6, 'line count ok');
+	TestIs(TAPTester.Lines.Count, 2, 'line count ok');
+	TestIs(TAPTester.DiagLines.Count, 4, 'diag lines count ok');
+
 	TestIs(TAPTester.Lines[0], 'ok 1 - test passed', 'pass ok');
 	TestIs(TAPTester.Lines[1], 'not ok 2 - test failed', 'fail ok');
+
+	TestIs(TAPTester.DiagLines[0], '# Failed test ''test failed''', 'diag ok');
 	DoneTesting;
 end.
 

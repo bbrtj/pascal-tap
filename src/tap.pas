@@ -24,7 +24,7 @@ type
 	TObjectClass = class of TObject;
 	TSkippedType = (stNotSkipped, stSkip, stTodo);
 	TBailoutType = (btHalt, btException);
-	TTAPPrinter = procedure(const vLine: String) of Object;
+	TTAPPrinter = procedure(const vLine: String; const vDiag: Boolean) of Object;
 
 	EBailout = class(Exception);
 
@@ -61,9 +61,9 @@ type
 		FSkippedReason: String;
 		FBailout: TBailoutType;
 
-		procedure PrintToStandardOutput(const vLine: String);
+		procedure PrintToStandardOutput(const vLine: String; const vDiag: Boolean);
 
-		procedure Print(vVals: Array of String);
+		procedure Print(vVals: Array of String; const vDiag: Boolean = False);
 		procedure PrintDiag(const vName, vExpected, vGot: String);
 
 	protected
@@ -73,6 +73,7 @@ type
 		constructor Create(const vParent: TTAPContext = nil);
 
 		procedure Note(const vText: String);
+		procedure Diag(const vText: String);
 
 		procedure Skip(const vSkip: TSkippedType; const vReason: String); virtual;
 		procedure TestPass(const vName: String = ''); virtual;
@@ -120,6 +121,11 @@ var
 	Adds a note to the TAP output as a comment in a new line
 }
 procedure Note(const vText: String);
+
+{
+	Adds diagnostics to the TAP output as a comment. Will be outputed to standard error.
+}
+procedure Diag(const vText: String);
 
 {
 	Skips the next test executed (just one)
@@ -238,12 +244,13 @@ end;
 
 // Object interface
 
-procedure TTAPContext.PrintToStandardOutput(const vLine: String);
+procedure TTAPContext.PrintToStandardOutput(const vLine: String; const vDiag: Boolean);
 begin
-	writeln(vLine);
+	if vDiag then writeln(StdErr, vLine)
+	else writeln(vLine);
 end;
 
-procedure TTAPContext.Print(vVals: Array of String);
+procedure TTAPContext.Print(vVals: Array of String; const vDiag: Boolean = False);
 var
 	vStr: String = '';
 	vInd: Int32;
@@ -255,18 +262,18 @@ begin
 		vStr += vVals[Int32(vInd)];
 	end;
 
-	self.FPrinter(vStr);
+	self.FPrinter(vStr, vDiag);
 end;
 
 procedure TTAPContext.PrintDiag(const vName, vExpected, vGot: String);
 begin
 	if length(vName) > 0 then
-		self.Note('Failed test ' + Quoted(vName))
+		self.Diag('Failed test ' + Quoted(vName))
 	else
-		self.Note('Failed test');
-	self.Note('expected: ' + vExpected);
-	self.Note('     got: ' + vGot);
-	self.Note('');
+		self.Diag('Failed test');
+	self.Diag('expected: ' + vExpected);
+	self.Diag('     got: ' + vGot);
+	self.Diag('');
 end;
 
 procedure TTAPContext.InternalOk(const vPassed: Boolean; const vName, vExpected, vGot: String);
@@ -330,6 +337,16 @@ begin
 		self.Print([cTAPComment, vText])
 	else
 		self.Print([]);
+end;
+
+procedure TTAPContext.Diag(const vText: String);
+begin
+	if self.FAllSkipped <> stNotSkipped then exit;
+
+	if length(vText) > 0 then
+		self.Print([cTAPComment, vText], True)
+	else
+		self.Print([], True);
 end;
 
 procedure TTAPContext.Skip(const vSkip: TSkippedType; const vReason: String);
@@ -493,7 +510,7 @@ procedure TTAPContext.BailOut(const vReason: String);
 begin
 	// not using self.Print causes bailout to be printed at top TAP
 	// level (compatibility with TAP 13)
-	self.FPrinter(cTAPBailOut + Escaped(vReason));
+	self.FPrinter(cTAPBailOut + Escaped(vReason), False);
 
 	case self.FBailout of
 		btHalt: halt(255);
