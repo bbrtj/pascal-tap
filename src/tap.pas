@@ -49,6 +49,7 @@ type
 
 	strict private
 		FParent: TTAPContext;
+		FNested: UInt32;
 		FName: String;
 
 		FExecuted: UInt32;
@@ -193,7 +194,7 @@ procedure BailOut(const vReason: String);
 
 {
 	Starts a subtest. All subtests must be closed with SubtestEnd for valid
-	output to be produced. Note that subtests cannot be nested.
+	output to be produced.
 }
 procedure SubtestBegin(const vName: String);
 procedure SubtestEnd();
@@ -236,7 +237,7 @@ var
 	vStr: String = '';
 	vInd: Int32;
 begin
-	if FParent <> nil then
+	for vInd := 1 to self.FNested do
 		vStr += cTAPSubtestIndent;
 
 	for vInd := low(vVals) to high(vVals) do begin
@@ -269,6 +270,7 @@ begin
 	self.FPlan := 0;
 
 	if vParent <> nil then begin
+		self.FNested := vParent.FNested + 1;
 		self.FSkipped := vParent.FSkipped;
 		self.FSkippedReason := vParent.FSkippedReason;
 		self.FFatal := vParent.FFatal;
@@ -277,6 +279,7 @@ begin
 		self.FBailoutBehavior := vParent.FBailoutBehavior;
 	end
 	else begin
+		self.FNested := 0;
 		self.FSkipped := stNoSkip;
 		self.FSkippedReason := '';
 		self.FFatal := ftNoFatal;
@@ -399,9 +402,6 @@ end;
 
 function TTAPContext.SubtestBegin(const vName: String): TTAPContext;
 begin
-	if self.FParent <> nil then
-		self.BailOut('cannot nest subtests');
-
 	result := TTAPContext.Create(self);
 	result.FName := vName;
 
