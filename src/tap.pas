@@ -1,97 +1,14 @@
-{
-	Partial implementation of TAP version 14 producer.
-	https://testanything.org/tap-version-14-specification.html
-
-	Features:
-	- outputs valid TAP
-	- minimal interface with a few helpers for basic Pascal types
-	- configurable output destination
-	- keeps track of suite / subtest state (passed / executed)
-	- simple and small, easy to extend
-
-	Missing TAP v14 features:
-	- YAML diagnostics
-}
 unit TAP;
 
 {$mode objfpc}{$H+}{$J-}
 
 interface
 
-uses sysutils;
+uses TAPCore, sysutils;
 
 type
-	TObjectClass = class of TObject;
-	TSkippedType = (stNoSkip, stSkip, stTodo, stSkipAll);
-	TFatalType = (ftNoFatal, ftFatalSingle, ftFatalAll);
-	TBailoutType = (btHalt, btException);
-	TTAPPrinter = procedure(const vLine: String; const vDiag: Boolean) of Object;
-
-	EBailout = class(Exception);
-
-	{
-		TTAPContext is the main class which keeps track of tests performed and
-		outputs TAP. It can be used directly, but this is considered advanced
-		usage. Instead, use the helper procedures provided by this unit to
-		manipulate the global object.
-	}
-	TTAPContext = class
-	const
-		cTAPOk = 'ok ';
-		cTAPNot = 'not ';
-		cTAPComment = '# ';
-		cTAPSubtest = 'Subtest: ';
-		cTAPSubtestIndent = '    ';
-		cTAPTodo = 'TODO ';
-		cTAPSkip = 'SKIP ';
-		cTAPBailOut = 'Bail out! ';
-		cTAPPragma = 'pragma ';
-
-	strict private
-		FParent: TTAPContext;
-		FNested: UInt32;
-		FName: String;
-
-		FExecuted: UInt32;
-		FPassed: UInt32;
-		FPlanned: Boolean;
-		FPlan: UInt32;
-
-		FSkipped: TSkippedType;
-		FSkippedReason: String;
-		FFatal: TFatalType;
-
-		FPrinter: TTAPPrinter;
-		FBailoutBehavior: TBailoutType;
-
-		procedure PrintToStandardOutput(const vLine: String; const vDiag: Boolean);
-
-		procedure Print(vVals: Array of String; const vDiag: Boolean = False);
-		procedure PrintDiag(const vName, vExpected, vGot: String);
-
-	public
-		constructor Create(const vParent: TTAPContext = nil);
-
-		procedure Skip(const vSkip: TSkippedType; const vReason: String); virtual;
-		procedure Ok(const vPassed: Boolean; const vName, vExpected, vGot: String); virtual;
-
-		procedure Comment(const vText: String; const vDiag: Boolean = False); virtual;
-		procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
-		procedure Plan(const vNumber: UInt32; const vReason: String = ''; const vSkipIfPlanned: Boolean = False); virtual;
-		procedure BailOut(const vReason: String); virtual;
-
-		function SubtestBegin(const vName: String): TTAPContext; virtual;
-		function SubtestEnd(): TTAPContext; virtual;
-
-		property TestsExecuted: UInt32 read FExecuted;
-		property TestsPassed: UInt32 read FPassed;
-		property Fatal: TFatalType read FFatal write FFatal;
-		property Printer: TTAPPrinter read FPrinter write FPrinter;
-		property BailoutBehavior: TBailoutType read FBailoutBehavior write FBailoutBehavior;
-	end;
-
-var
-	TAPGlobalContext: TTAPContext;
+	export TSkippedType;
+	export TFatalType;
 
 {
 	Adds a note to the TAP output as a comment in a new line
@@ -203,12 +120,6 @@ implementation
 
 // Hidden helpers
 
-function Escaped(const vVal: String): String;
-begin
-	result := StringReplace(vVal, '\', '\\', [rfReplaceAll]);
-	result := StringReplace(result, '#', '\#', [rfReplaceAll]);
-end;
-
 function Quoted(const vVal: String): String;
 begin
 	result := '''' + vVal + '''';
@@ -222,213 +133,242 @@ begin
 		result := 'False';
 end;
 
-// Object interface
+// TAP Interface
 
-procedure TTAPContext.PrintToStandardOutput(const vLine: String; const vDiag: Boolean);
+procedure Note(const vText: String);
 begin
-	if vDiag then
-		writeln(StdErr, vLine)
-	else
-		writeln(vLine);
+	TAPGlobalContext.Comment(vText);
 end;
 
-procedure TTAPContext.Print(vVals: Array of String; const vDiag: Boolean = False);
-var
-	vStr: String = '';
-	vInd: Int32;
+procedure Diag(const vText: String);
 begin
-	for vInd := 1 to self.FNested do
-		vStr += cTAPSubtestIndent;
-
-	for vInd := low(vVals) to high(vVals) do begin
-		vStr += vVals[Int32(vInd)];
-	end;
-
-	self.FPrinter(vStr, vDiag);
+	TAPGlobalContext.Comment(vText, True);
 end;
 
-procedure TTAPContext.PrintDiag(const vName, vExpected, vGot: String);
+procedure Fatal(const vType: TFatalType = ftFatalSingle);
 begin
-	if length(vName) > 0 then
-		self.Comment('Failed test ' + Quoted(vName), True)
-	else
-		self.Comment('Failed test', True);
-
-	self.Comment('expected: ' + vExpected, True);
-	self.Comment('     got: ' + vGot, True);
-	self.Comment('', True);
+	TAPGlobalContext.Fatal := vType;
 end;
 
-constructor TTAPContext.Create(const vParent: TTAPContext = nil);
+procedure Skip();
 begin
-	self.FParent := vParent;
-	self.FName := '';
-
-	self.FPassed := 0;
-	self.FExecuted := 0;
-	self.FPlanned := False;
-	self.FPlan := 0;
-
-	if vParent <> nil then begin
-		self.FNested := vParent.FNested + 1;
-		self.FSkipped := vParent.FSkipped;
-		self.FSkippedReason := vParent.FSkippedReason;
-		self.FFatal := vParent.FFatal;
-
-		self.FPrinter := vParent.FPrinter;
-		self.FBailoutBehavior := vParent.FBailoutBehavior;
-	end
-	else begin
-		self.FNested := 0;
-		self.FSkipped := stNoSkip;
-		self.FSkippedReason := '';
-		self.FFatal := ftNoFatal;
-
-		self.FPrinter := @self.PrintToStandardOutput;
-		self.FBailoutBehavior := btHalt;
-	end;
+	TAPGlobalContext.Skip(stSkip, '');
 end;
 
-procedure TTAPContext.Comment(const vText: String; const vDiag: Boolean = False);
+procedure Skip(const vSkip: TSkippedType; const vReason: String = '');
 begin
-	if self.FSkipped = stSkipAll then exit;
-
-	if length(vText) > 0 then
-		self.Print([cTAPComment, vText], vDiag)
-	else
-		self.Print([], vDiag);
+	TAPGlobalContext.Skip(vSkip, vReason);
 end;
 
-procedure TTAPContext.Skip(const vSkip: TSkippedType; const vReason: String);
+procedure TestPass(const vName: String = '');
 begin
-	if self.FSkipped = stSkipAll then exit;
-
-	if vSkip = stSkipAll then begin
-		if self.FExecuted > 0 then
-			self.BailOut('cannot skip a running test');
-
-		self.Plan(0, cTAPSkip + vReason);
-	end;
-
-	self.FSkipped := vSkip;
-	self.FSkippedReason := vReason;
+	TAPGlobalContext.Ok(
+		True,
+		vName,
+		'',
+		''
+	);
 end;
 
-procedure TTAPContext.Ok(const vPassed: Boolean; const vName, vExpected, vGot: String);
-var
-	vResult: String = cTAPOk;
-	vSkipped: Boolean;
+procedure TestFail(const vName: String = '');
 begin
-	if self.FSkipped = stSkipAll then exit;
-	vSkipped := self.FSkipped <> stNoSkip;
-
-	self.FExecuted += 1;
-	self.FPassed += Integer(vPassed);
-
-	if not vPassed then
-		vResult := cTAPNot + vResult;
-
-	vResult += IntToStr(self.FExecuted);
-
-	if length(vName) > 0 then
-		vResult += ' - ' + Escaped(vName);
-
-	case self.FSkipped of
-		stSkip: vResult += ' ' + cTAPComment + cTAPSkip + self.FSkippedReason;
-		stTodo: vResult += ' ' + cTAPComment + cTAPTodo + self.FSkippedReason;
-	else
-	end;
-
-	self.Print([vResult]);
-	if (not vPassed) and (not vSkipped) then begin
-		self.PrintDiag(vName, vExpected, vGot);
-	end;
-
-	self.Skip(stNoSkip, '');
-
-	if self.FFatal <> ftNoFatal then begin
-		if self.FFatal = ftFatalSingle then self.FFatal := ftNoFatal;
-		if (not vPassed) and (not vSkipped) then self.BailOut('fatal test failure');
-	end;
+	TAPGlobalContext.Ok(
+		False,
+		vName,
+		'(nothing)',
+		'failure'
+	);
 end;
 
-procedure TTAPContext.Pragma(const vPragma: String; const vStatus: Boolean = True);
-var
-	vPragmaStatus: Char;
+procedure TestOk(const vPassed: Boolean; const vName: String = '');
 begin
-	if self.FSkipped = stSkipAll then exit;
-
-	if vStatus then
-		vPragmaStatus := '+'
-	else
-		vPragmaStatus := '-';
-
-	self.Print([cTAPPragma, vPragmaStatus, vPragma]);
+	TAPGlobalContext.Ok(
+		vPassed,
+		vName,
+		BoolToReadableStr(True),
+		BoolToReadableStr(False)
+	);
 end;
 
-procedure TTAPContext.Plan(const vNumber: UInt32; const vReason: String = ''; const vSkipIfPlanned: Boolean = False);
-var
-	vFullReason: String = '';
+procedure TestIs(const vGot, vExpected: Int64; const vName: String = '');
 begin
-	if self.FSkipped = stSkipAll then exit;
-
-	if self.FPlanned then begin
-		if vSkipIfPlanned then exit;
-		self.BailOut('cannot plan twice');
-	end;
-
-	self.FPlan := vNumber;
-	self.FPlanned := True;
-
-	if length(vReason) > 0 then
-		vFullReason := ' ' + cTAPComment + Escaped(vReason);
-
-	self.Print(['1..', IntToStr(vNumber), vFullReason]);
+	TAPGlobalContext.Ok(
+		vGot = vExpected,
+		vName,
+		IntToStr(vExpected),
+		IntToStr(vGot)
+	);
 end;
 
-procedure TTAPContext.BailOut(const vReason: String);
+procedure TestIs(const vGot, vExpected: String; const vName: String = '');
 begin
-	if self.FSkipped = stSkipAll then exit;
-
-	// not using self.Print causes bailout to be printed at top TAP
-	// level (compatibility with TAP 13)
-	self.FPrinter(cTAPBailOut + Escaped(vReason), False);
-
-	case self.FBailoutBehavior of
-		btHalt: halt(255);
-		btException: raise EBailout.Create(vReason);
-	end;
+	TAPGlobalContext.Ok(
+		vGot = vExpected,
+		vName,
+		Quoted(vExpected),
+		Quoted(vGot)
+	);
 end;
 
-function TTAPContext.SubtestBegin(const vName: String): TTAPContext;
+procedure TestIs(const vGot, vExpected: Boolean; const vName: String = '');
 begin
-	result := TTAPContext.Create(self);
-	result.FName := vName;
-
-	self.Comment(cTAPSubtest + vName);
+	TAPGlobalContext.Ok(
+		vGot = vExpected,
+		vName,
+		BoolToReadableStr(vExpected),
+		BoolToReadableStr(vGot)
+	);
 end;
 
-function TTAPContext.SubtestEnd(): TTAPContext;
+procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
 begin
-	if self.FParent = nil then
-		self.BailOut('no subtest to end');
-
-	result := self.FParent;
-
-	self.Plan(self.FExecuted, '', True);
-	if self.FSkipped = stSkipAll then result.Skip(stSkip, self.FSkippedReason);
-	result.Ok(self.FPlan = self.FPassed, self.FName, 'pass', 'fail');
-	self.Free;
+	TAPGlobalContext.Ok(
+		vGot is vExpected,
+		vName,
+		'object of class ' + vExpected.ClassName,
+		'object of class ' + vGot.ClassName
+	);
 end;
 
-{$INCLUDE helpers.inc}
+procedure TestIsnt(const vGot, vExpected: Int64; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		not(vGot = vExpected),
+		vName,
+		'not ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
+end;
 
-initialization
-	TAPGlobalContext := TTAPContext.Create;
+procedure TestIsnt(const vGot, vExpected: String; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		not(vGot = vExpected),
+		vName,
+		'not ' + Quoted(vExpected),
+		Quoted(vGot)
+	);
+end;
 
-finalization
-	if TAPGlobalContext <> nil then
-		TAPGlobalContext.Free;
+procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		not(vGot = vExpected),
+		vName,
+		'not ' + BoolToReadableStr(vExpected),
+		BoolToReadableStr(vGot)
+	);
+end;
+
+procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		not(vGot is vExpected),
+		vName,
+		'not object of class ' + vExpected.ClassName,
+		'object of class ' + vGot.ClassName
+	);
+end;
+
+procedure TestGreater(const vGot, vExpected: Int64; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		vGot > vExpected,
+		vName,
+		'more than ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
+end;
+
+procedure TestGreater(const vGot, vExpected: Double; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		vGot > vExpected,
+		vName,
+		'more than ' + FloatToStr(vExpected),
+		FloatToStr(vGot)
+	);
+end;
+
+procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		vGot >= vExpected,
+		vName,
+		'at least ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
+end;
+
+procedure TestLesser(const vGot, vExpected: Int64; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		vGot < vExpected,
+		vName,
+		'less than ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
+end;
+
+procedure TestLesser(const vGot, vExpected: Double; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		vGot < vExpected,
+		vName,
+		'less than ' + FloatToStr(vExpected),
+		FloatToStr(vGot)
+	);
+end;
+
+procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		vGot <= vExpected,
+		vName,
+		'at most ' + IntToStr(vExpected),
+		IntToStr(vGot)
+	);
+end;
+
+procedure TestWithin(const vGot, vExpected, vPrecision: Double; const vName: String = '');
+begin
+	TAPGlobalContext.Ok(
+		abs(vGot - vExpected) < vPrecision,
+		vName,
+		FloatToStr(vExpected) + ' +-' + FloatToStr(vPrecision),
+		FloatToStr(vGot)
+	);
+end;
+
+procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
+begin
+	TAPGlobalContext.Pragma(vPragma, vStatus);
+end;
+
+procedure Plan(const vNumber: UInt32; const vReason: String = '');
+begin
+	TAPGlobalContext.Plan(vNumber, vReason);
+end;
+
+procedure DoneTesting();
+begin
+	TAPGlobalContext.Plan(TAPGlobalContext.TestsExecuted, '', True);
+end;
+
+procedure BailOut(const vReason: String);
+begin
+	TAPGlobalContext.BailOut(vReason);
+end;
+
+procedure SubtestBegin(const vName: String);
+begin
+	TAPGlobalContext := TAPGlobalContext.SubtestBegin(vName);
+end;
+
+procedure SubtestEnd();
+begin
+	TAPGlobalContext := TAPGlobalContext.SubtestEnd;
+end;
 
 end.
 

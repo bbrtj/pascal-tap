@@ -4,7 +4,7 @@ unit Tester;
 
 interface
 
-uses TAP, Classes;
+uses TAPCore, Classes;
 
 type
 	TTAPTester = class
