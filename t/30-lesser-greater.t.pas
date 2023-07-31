@@ -32,22 +32,15 @@ var
 begin
 	TAPTester.Hijack;
 	RunTestPositive;
-	vTotalTests := TAPGlobalContext.TestsExecuted;
-	vPassedTests := TAPGlobalContext.TestsPassed;
 	TAPTester.Release;
 
-	TestIs(vTotalTests, 7, 'test count ok');
-	TestIs(vPassedTests, 7, 'passed test count ok');
 	TestIs(TAPTester.Lines.Count, 7, 'line count ok');
+	TestIs(TAPTester.DiagLines.Count, 0, 'diag line count ok');
 
 	TAPTester.Hijack;
 	RunTestNegative;
-	vTotalTests := TAPGlobalContext.TestsExecuted;
-	vPassedTests := TAPGlobalContext.TestsPassed;
 	TAPTester.Release;
 
-	TestIs(vTotalTests, 9, 'test count ok');
-	TestIs(vPassedTests, 0, 'passed test count ok');
 	TestIs(TAPTester.Lines.Count, 9, 'line count ok');
 	TestIs(TAPTester.DiagLines.Count, 36, 'diag line count ok');
 	TestIs(TAPTester.DiagLines[1], '# expected: less than 2', 'test 1 diag ok');

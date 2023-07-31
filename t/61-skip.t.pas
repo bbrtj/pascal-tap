@@ -4,7 +4,7 @@ uses TAP, Tester;
 
 procedure RunTestSkipAll();
 begin
-	Skip(stSkipAll, 'all skipped');
+	SkipAll('all skipped');
 	Plan(5);
 	TestOk(False);
 	Fatal;
@@ -30,7 +30,7 @@ end;
 
 procedure RunTestTodoOne();
 begin
-	Skip(stTodo);
+	Todo;
 	TestFail;
 	TestPass;
 end;

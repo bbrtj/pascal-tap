@@ -6,10 +6,6 @@ interface
 
 uses TAPCore, sysutils;
 
-type
-	export TSkippedType;
-	export TFatalType;
-
 {
 	Adds a note to the TAP output as a comment in a new line
 }
@@ -22,16 +18,17 @@ procedure Diag(const vText: String);
 
 {
 	Marks the next test fatal. Not passing the test will cause the bailout.
-	Argument can be passed to turn fatal on or off on all following tests.
 }
-procedure Fatal(const vType: TFatalType = ftFatalSingle);
+procedure Fatal();
+procedure FatalAll(const vEnabled: Boolean = True);
 
 {
 	Skips the next test executed (just one). Can also todo the next test or
 	skip all tests.
 }
-procedure Skip();
-procedure Skip(const vSkip: TSkippedType; const vReason: String = '');
+procedure Skip(const vReason: String = '');
+procedure Todo(const vReason: String = '');
+procedure SkipAll(const vReason: String = '');
 
 {
 	Adds a new unconditionally passing testpoint to the output
@@ -145,19 +142,38 @@ begin
 	TAPGlobalContext.Comment(vText, True);
 end;
 
-procedure Fatal(const vType: TFatalType = ftFatalSingle);
+procedure Fatal();
 begin
-	TAPGlobalContext.Fatal := vType;
+	TAPGlobalContext.Fatal := ftFatalSingle;
 end;
+
+procedure FatalAll(const vEnabled: Boolean = True);
+begin
+	if vEnabled then
+		TAPGlobalContext.Fatal := ftFatalAll
+	else
+		TAPGlobalContext.Fatal := ftNoFatal;
+end;
+
 
 procedure Skip();
 begin
 	TAPGlobalContext.Skip(stSkip, '');
 end;
 
-procedure Skip(const vSkip: TSkippedType; const vReason: String = '');
+procedure Skip(const vReason: String = '');
 begin
-	TAPGlobalContext.Skip(vSkip, vReason);
+	TAPGlobalContext.Skip(stSkip, vReason);
+end;
+
+procedure Todo(const vReason: String = '');
+begin
+	TAPGlobalContext.Skip(stTodo, vReason);
+end;
+
+procedure SkipAll(const vReason: String = '');
+begin
+	TAPGlobalContext.Skip(stSkipAll, vReason);
 end;
 
 procedure TestPass(const vName: String = '');

@@ -36,7 +36,7 @@ begin
 	// You can mark subtest as skipped, which will not produce any
 	// output for its tests (even if implemented)
 	SubtestBegin('Should return the sixth Fibonacci number');
-	Skip(stSkipAll, 'procrastinating...');
+	SkipAll('procrastinating...');
 	TestIs(GetNextFibonacciNumber(), 12, 'did I get this right?');
 	SubtestEnd;
 

@@ -2,7 +2,7 @@ program FatalTest;
 
 {$mode objfpc}{$H+}{$J-}
 
-uses TAP, Tester;
+uses TAP, TAPCore, Tester;
 
 function RunTestOne(): Boolean;
 begin
@@ -32,7 +32,7 @@ begin
 	result := False;
 
 	try
-		Fatal(ftFatalAll);
+		FatalAll;
 		TestOk(True);
 		TestOk(False);
 	except
@@ -45,9 +45,9 @@ begin
 	result := False;
 
 	try
-		Fatal(ftFatalAll);
+		FatalAll;
 		TestOk(True);
-		Fatal(ftNoFatal);
+		FatalAll(False);
 		TestOk(False);
 	except
 		on EBailout do result := True;

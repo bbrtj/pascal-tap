@@ -11,11 +11,11 @@ program Bail;
 
 {$mode objfpc}{$H+}{$J-}
 
-uses TAP;
+uses TAP, TAPCore;
 
 begin
 	// Uncomment to get an exception instead of straight halting of the
-	// program. The exception will be of type EBailout.
+	// program. The exception will be of type EBailout from TAPCore unit.
 	// TAPGlobalContext.BailoutBehavior := btException;
 
 	Plan(1);

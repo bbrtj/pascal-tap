@@ -11,7 +11,7 @@ begin
 	TestIs(TAPTester.Lines[0], '1..5', 'plan ok');
 
 	TAPTester.Hijack;
-	Skip(stSkipAll, 'skipped for now');
+	SkipAll('skipped for now');
 	TAPTester.Release;
 
 	TestIs(TAPTester.Lines.Count, 1, 'line count ok');

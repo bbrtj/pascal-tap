@@ -2,7 +2,7 @@ program BailTest;
 
 {$mode objfpc}{$H+}{$J-}
 
-uses TAP, Tester;
+uses TAP, TAPCore, Tester;
 
 var
 	vBailedOut: Boolean = False;
