@@ -81,9 +81,8 @@ type
 		function SubtestBegin(const vName: String): TTAPContext; virtual;
 		function SubtestEnd(): TTAPContext; virtual;
 
-		function TestsExecuted(): UInt32;
-		function TestsPassed(): UInt32;
-
+		property TestsExecuted: UInt32 read FExecuted;
+		property TestsPassed: UInt32 read FPassed;
 		property Printer: TTAPPrinter read FPrinter write FPrinter;
 		property BailoutBehavior: TBailoutType read FBailout write FBailout;
 	end;
@@ -413,16 +412,6 @@ begin
 	self.Plan(self.FExecuted, '', True);
 	result.Ok(self.FPlan = self.FPassed, self.FName, 'pass', 'fail');
 	self.Free;
-end;
-
-function TTAPContext.TestsExecuted(): UInt32;
-begin
-	result := self.FExecuted;
-end;
-
-function TTAPContext.TestsPassed(): UInt32;
-begin
-	result := self.FPassed;
 end;
 
 {$INCLUDE helpers.inc}
