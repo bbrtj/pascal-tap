@@ -144,7 +144,8 @@ end;
 
 procedure Fatal();
 begin
-	TAPGlobalContext.Fatal := ftFatalSingle;
+	if TAPGlobalContext.Fatal <> ftFatalAll then
+		TAPGlobalContext.Fatal := ftFatalSingle;
 end;
 
 procedure FatalAll(const vEnabled: Boolean = True);

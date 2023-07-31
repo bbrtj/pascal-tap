@@ -53,6 +53,21 @@ begin
 		on EBailout do result := True;
 	end;
 end;
+
+function RunTestFive(): Boolean;
+begin
+	result := False;
+
+	try
+		FatalAll;
+		TestPass;
+		Fatal; TestPass;
+		TestFail;
+	except
+		on EBailout do result := True;
+	end;
+end;
+
 var
 	vBailedOut: Boolean;
 
@@ -82,6 +97,13 @@ begin
 	TAPTester.Release;
 
 	TestOk(not vBailedOut, 'not bailed out correctly');
+
+	TAPTester.Hijack;
+	vBailedOut := RunTestFive;
+	TAPTester.Release;
+
+	TestOk(vBailedOut, 'bailed out correctly');
+	TestIs(TAPTester.DiagLines.Count, 4, 'diag produced ok');
 
 	DoneTesting;
 end.
