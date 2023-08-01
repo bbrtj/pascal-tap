@@ -72,7 +72,7 @@ type
 		procedure PrintDiag(const vName, vExpected, vGot: String);
 
 	public
-		constructor Create(const vParent: TTAPContext = nil);
+		constructor Create(const vParent: TTAPContext = nil); virtual;
 
 		procedure Skip(const vSkip: TSkippedType; const vReason: String); virtual;
 		procedure Ok(const vPassed: Boolean; const vName, vExpected, vGot: String); virtual;

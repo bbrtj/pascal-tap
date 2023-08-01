@@ -11,7 +11,7 @@ uses TAPSuite, TAP, TAPCore, Tester;
 
 type
 	THelpersSuite = class(TTAPSuite)
-		constructor Create();
+		constructor Create(); override;
 
 		procedure IsTest();
 		procedure IsClassTest();

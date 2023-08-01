@@ -11,7 +11,7 @@ uses TAPSuite, TAP, TAPCore, Tester;
 
 type
 	TSubtestsSuite = class(TTAPSuite)
-		constructor Create();
+		constructor Create(); override;
 
 		procedure SubtestTest();
 		procedure NestedSubtestTest();

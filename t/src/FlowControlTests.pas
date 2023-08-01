@@ -11,7 +11,7 @@ uses TAPSuite, TAP, TAPCore, Tester;
 
 type
 	TFlowControlSuite = class(TTAPSuite)
-		constructor Create();
+		constructor Create(); override;
 
 		procedure FatalTest();
 		procedure SkipTest();

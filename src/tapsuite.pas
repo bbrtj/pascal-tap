@@ -58,7 +58,7 @@ type
 		procedure Scenario(const vRunner: TTAPScenarioRunner; const vName: String = '');
 
 	public
-		constructor Create();
+		constructor Create(); virtual;
 		destructor Destroy; override;
 
 		procedure Setup(); virtual;

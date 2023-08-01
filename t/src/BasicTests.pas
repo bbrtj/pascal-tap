@@ -12,7 +12,7 @@ uses TAPSuite, TAP, TAPCore, Tester;
 
 type
 	TBasicSuite = class(TTAPSuite, ITAPSuiteEssential)
-		constructor Create();
+		constructor Create(); override;
 
 		procedure PlanTest();
 		procedure BailTest();
