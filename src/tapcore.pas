@@ -92,6 +92,8 @@ type
 		property BailoutBehavior: TBailoutType read FBailoutBehavior write FBailoutBehavior;
 	end;
 
+	TTAPContextClass = class of TTAPContext;
+
 var
 	TAPGlobalContext: TTAPContext;
 
@@ -286,7 +288,7 @@ end;
 
 function TTAPContext.SubtestBegin(const vName: String): TTAPContext;
 begin
-	result := TTAPContext.Create(self);
+	result := TTAPContextClass(self.ClassType).Create(self);
 	result.FName := vName;
 
 	self.Comment(cTAPSubtest + vName);
