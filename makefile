@@ -7,10 +7,10 @@ TEST_VERBOSE ?= 0
 TEST_FLAG ?= $$(if [ $(TEST_VERBOSE) == 1 ]; then echo "--verbose"; fi)
 
 build: prepare
-	for file in t/*.t.pas; do $(FPC) $(FPC_FLAGS) -Fut/src $${file}; done
+	$(FPC) $(FPC_FLAGS) -Fut/src -FU$(BUILD_DIR) -ot/tests.t t/tests.t.pas
 
 test: build
-	$(TEST_RUNNER) build $(TEST_FLAG)
+	$(TEST_RUNNER) $(TEST_FLAG)
 
 examples: prepare
 	for file in ex/*.pas; do $(FPC) $(FPC_FLAGS) $${file}; done
