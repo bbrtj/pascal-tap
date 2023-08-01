@@ -11,9 +11,6 @@ interface
 
 uses TAPCore, sysutils;
 
-type
-	TObjectClass = class of TObject;
-
 {
 	Adds a note to the TAP output as a comment in a new line
 }
@@ -64,7 +61,7 @@ procedure TestOk(const vPassed: Boolean; const vName: String = '');
 procedure TestIs(const vGot, vExpected: Int64; const vName: String = '');
 procedure TestIs(const vGot, vExpected: String; const vName: String = '');
 procedure TestIs(const vGot, vExpected: Boolean; const vName: String = '');
-procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
+procedure TestIs(const vGot: TObject; const vExpected: TClass; const vName: String = '');
 
 {
 	Same as TestIs, but fails if the arguments are equal.
@@ -72,7 +69,7 @@ procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName
 procedure TestIsnt(const vGot, vExpected: Int64; const vName: String = '');
 procedure TestIsnt(const vGot, vExpected: String; const vName: String = '');
 procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String = '');
-procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
+procedure TestIsnt(const vGot: TObject; const vExpected: TClass; const vName: String = '');
 
 {
 	Compares two numbers to determine whether one is greater than the other.
@@ -245,7 +242,7 @@ begin
 	);
 end;
 
-procedure TestIs(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
+procedure TestIs(const vGot: TObject; const vExpected: TClass; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot is vExpected,
@@ -285,7 +282,7 @@ begin
 	);
 end;
 
-procedure TestIsnt(const vGot: TObject; const vExpected: TObjectClass; const vName: String = '');
+procedure TestIsnt(const vGot: TObject; const vExpected: TClass; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		not(vGot is vExpected),
