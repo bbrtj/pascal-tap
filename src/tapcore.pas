@@ -26,7 +26,7 @@ uses sysutils;
 type
 	TSkippedType = (stNoSkip, stSkip, stTodo, stSkipAll);
 	TFatalType = (ftNoFatal, ftFatalSingle, ftFatalAll);
-	TBailoutType = (btHalt, btException);
+	TBailoutType = (btHalt, btException, btExceptionNoOutput);
 	TTAPPrinter = procedure(const vLine: String; const vDiag: Boolean) of Object;
 
 	EBailout = class(Exception);
@@ -275,11 +275,12 @@ begin
 
 	// not using self.Print causes bailout to be printed at top TAP
 	// level (compatibility with TAP 13)
-	self.FPrinter(cTAPBailOut + Escaped(vReason), False);
+	if self.FBailoutBehavior <> btExceptionNoOutput then
+		self.FPrinter(cTAPBailOut + Escaped(vReason), False);
 
 	case self.FBailoutBehavior of
 		btHalt: halt(255);
-		btException: raise EBailout.Create(vReason);
+		btException, btExceptionNoOutput: raise EBailout.Create(vReason);
 	end;
 end;
 
