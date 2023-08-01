@@ -67,12 +67,13 @@ var
 	vError: String;
 begin
 	for vSuite in TAPSuites do begin
+		SubtestBegin('testing suite: ' + vSuite.SuiteName);
+
 		if vSuite is ITAPSuiteSkip then begin
 			SkipAll('suite ' + vSuite.SuiteName + ' is skipped');
+			SubtestEnd;
 			continue;
 		end;
-
-		SubtestBegin('testing suite: ' + vSuite.SuiteName);
 
 		for vScenario in vSuite.Scenarios do begin
 			vError := '';

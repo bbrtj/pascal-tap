@@ -22,6 +22,12 @@ type
 		procedure OkTest();
 	end;
 
+	TSkippedSuite = class(TTAPSuite, ITAPSuiteSkip)
+		constructor Create();
+
+		procedure FailMiserably();
+	end;
+
 implementation
 
 constructor TBasicSuite.Create();
@@ -141,7 +147,19 @@ begin
 	TestIs(TAPTester.DiagLines[0], '# Failed test ''test 2''', 'diag ok');
 end;
 
+constructor TSkippedSuite.Create();
+begin
+	inherited;
+	Scenario(@self.FailMiserably, 'Would normally fail, but test is skipped');
+end;
+
+procedure TSkippedSuite.FailMiserably();
+begin
+	TestFail('I failed');
+end;
+
 begin
 	TAPSuites.Add(TBasicSuite.Create);
+	TAPSuites.Add(TSkippedSuite.Create);
 end.
 
