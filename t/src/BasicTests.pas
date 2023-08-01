@@ -1,3 +1,7 @@
+{
+	Test for basic keywords used in testing. First test to execute, as these
+	are essential for every test.
+}
 unit BasicTests;
 
 {$mode objfpc}{$H+}{$J-}
