@@ -44,7 +44,7 @@ type
 
 	{
 		Extend this abstract class and add an object of it into TAPSuites list
-		(with TAPSuites.Add) for the test to be run during RunAllSuites.
+		(with Suite procedure) for the test to be run during RunAllSuites.
 	}
 	TTAPSuite = class abstract
 	protected
@@ -69,9 +69,16 @@ type
 	end;
 
 	TTAPSuites = specialize TFPGObjectList<TTAPSuite>;
+	TTAPSuiteClass = class of TTAPSuite;
 
 var
 	TAPSuites: TTAPSuites;
+
+{
+	Add a suite to the tests. Suites will be run in the same order they were
+	added.
+}
+procedure Suite(const vSuiteClass: TTAPSuiteClass);
 
 {
 	Run all registered test suites.
@@ -85,12 +92,20 @@ begin
 	result := vR1.Runner = vR2.Runner;
 end;
 
+procedure Suite(const vSuiteClass: TTAPSuiteClass);
+begin
+	TAPSuites.Add(vSuiteClass.Create);
+end;
+
 procedure RunAllSuites();
 var
 	vSuite: TTAPSuite;
 	vScenario: TTAPScenario;
 	vError: String;
 begin
+	Note('Running tests with pascal-tap suite runner.');
+	Plan(TAPSuites.Count);
+
 	for vSuite in TAPSuites do begin
 		SubtestBegin('testing suite: ' + vSuite.SuiteName);
 
@@ -132,8 +147,6 @@ begin
 
 		SubtestEnd;
 	end;
-
-	DoneTesting;
 end;
 
 procedure TTAPSuite.Scenario(const vRunner: TTAPScenarioRunner; const vName: String = '');

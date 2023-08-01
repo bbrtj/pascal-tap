@@ -220,7 +220,5 @@ begin
 	TestIs(TAPTester.DiagLines[33], '# expected: 1.5137 +-0.001', 'test 9 diag ok');
 end;
 
-begin
-	TAPSuites.Add(THelpersSuite.Create);
 end.
 

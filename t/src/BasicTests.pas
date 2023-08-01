@@ -158,8 +158,5 @@ begin
 	TestFail('I failed');
 end;
 
-begin
-	TAPSuites.Add(TBasicSuite.Create);
-	TAPSuites.Add(TSkippedSuite.Create);
 end.
 

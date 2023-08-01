@@ -190,7 +190,5 @@ begin
 	TestIs(TAPTester.Lines[1], 'ok 2', 'second line ok');
 end;
 
-begin
-	TAPSuites.Add(TFlowControlSuite.Create);
 end.
 

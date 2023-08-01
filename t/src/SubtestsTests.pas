@@ -94,7 +94,5 @@ begin
 	TestIs(TAPTester.Lines[9], 'ok 1 - level 1', 'level 1 testpoint ok');
 end;
 
-begin
-	TAPSuites.Add(TSubtestsSuite.Create);
 end.
 
