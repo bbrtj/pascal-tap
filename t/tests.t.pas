@@ -1,6 +1,7 @@
 program Tests;
 
-uses TAPSuite, BasicTests, HelpersTests;
+uses TAPSuite,
+	BasicTests, HelpersTests, SubtestsTests;
 
 begin
 	RunAllSuites;
