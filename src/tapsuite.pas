@@ -24,6 +24,10 @@ type
 	['{06671f72-3010-11ee-86c0-002b67685373}']
 	end;
 
+	ITAPSuiteEssential = interface
+	['{98a0e1bd-301c-11ee-86c0-002b67685373}']
+	end;
+
 	TTAPSuite = class abstract
 	protected
 		FScenarios: TTAPScenarios;
@@ -62,8 +66,6 @@ var
 	vScenario: TTAPScenario;
 	vError: String;
 begin
-	TAPGlobalContext.BailoutBehavior := btExceptionNoOutput;
-
 	for vSuite in TAPSuites do begin
 		if vSuite is ITAPSuiteSkip then begin
 			SkipAll('suite ' + vSuite.SuiteName + ' is skipped');
@@ -76,6 +78,8 @@ begin
 			vError := '';
 
 			SubtestBegin('testing scenario: ' + vScenario.ScenarioName);
+			TAPGlobalContext.BailoutBehavior := btExceptionNoOutput;
+
 			try
 				vSuite.Setup();
 				vScenario.Runner();
@@ -91,8 +95,12 @@ begin
 			end;
 			SubtestEnd;
 
-			if length(vError) > 0 then
-				TestFail('scenario failed: ' + vError, 'scenario finishing without exceptions');
+			if length(vError) > 0 then begin
+				if vSuite is ITAPSuiteEssential then
+					BailOut('essential scenario failed: ' + vError)
+				else
+					TestFail('scenario failed: ' + vError, 'scenario finishing without exceptions');
+			end;
 		end;
 
 		SubtestEnd;

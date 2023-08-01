@@ -11,7 +11,7 @@ interface
 uses TAPSuite, TAP, TAPCore, Tester;
 
 type
-	TBasicSuite = class(TTAPSuite)
+	TBasicSuite = class(TTAPSuite, ITAPSuiteEssential)
 		constructor Create();
 
 		procedure PlanTest();
