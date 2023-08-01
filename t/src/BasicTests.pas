@@ -105,15 +105,18 @@ begin
 	TAPTester.Hijack;
 	TestPass('test passed');
 	TestFail('test failed');
+	TestFail('test failed', '!!!');
 	TAPTester.Release;
 
-	Fatal; TestIs(TAPTester.Lines.Count, 2, 'line count ok');
-	Fatal; TestIs(TAPTester.DiagLines.Count, 4, 'diag lines count ok');
+	Fatal; TestIs(TAPTester.Lines.Count, 3, 'line count ok');
+	Fatal; TestIs(TAPTester.DiagLines.Count, 8, 'diag lines count ok');
 
 	TestIs(TAPTester.Lines[0], 'ok 1 - test passed', 'pass ok');
 	TestIs(TAPTester.Lines[1], 'not ok 2 - test failed', 'fail ok');
 
 	TestIs(TAPTester.DiagLines[0], '# Failed test ''test failed''', 'diag ok');
+	TestIs(TAPTester.DiagLines[1], '# expected: (nothing)', 'diag ok');
+	TestIs(TAPTester.DiagLines[5], '# expected: !!!', 'diag ok');
 end;
 
 procedure TBasicSuite.OkTest();

@@ -46,7 +46,7 @@ procedure TestPass(const vName: String = '');
 {
 	Adds a new unconditionally failing testpoint to the output
 }
-procedure TestFail(const vName: String = '');
+procedure TestFail(const vName: String = ''; const vDiag: String = '(nothing)');
 
 {
 	Tests whether the boolean passed as first argument is a true value. Adds a
@@ -195,12 +195,12 @@ begin
 	);
 end;
 
-procedure TestFail(const vName: String = '');
+procedure TestFail(const vName: String = ''; const vDiag: String = '(nothing)');
 begin
 	TAPGlobalContext.Ok(
 		False,
 		vName,
-		'(nothing)',
+		vDiag,
 		'failure'
 	);
 end;

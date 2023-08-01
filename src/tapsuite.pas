@@ -92,7 +92,7 @@ begin
 			SubtestEnd;
 
 			if length(vError) > 0 then
-				TestFail('scenario failed: ' + vError);
+				TestFail('scenario failed: ' + vError, 'scenario finishing without exceptions');
 		end;
 
 		SubtestEnd;
