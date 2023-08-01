@@ -37,21 +37,21 @@ begin
 	Plan(5);
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 1, 'line count ok');
+	Fatal; TestIs(TAPTester.Lines.Count, 1, 'line count ok');
 	TestIs(TAPTester.Lines[0], '1..5', 'plan ok');
 
 	TAPTester.Hijack;
 	SkipAll('skipped for now');
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 1, 'line count ok');
+	Fatal; TestIs(TAPTester.Lines.Count, 1, 'line count ok');
 	TestIs(TAPTester.Lines[0], '1..0 # SKIP skipped for now', 'skip ok');
 
 	TAPTester.Hijack;
 	DoneTesting;
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 1, 'line count ok');
+	Fatal; TestIs(TAPTester.Lines.Count, 1, 'line count ok');
 	TestIs(TAPTester.Lines[0], '1..0', 'done testing ok');
 end;
 
@@ -69,9 +69,9 @@ begin
 
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 1, 'line count ok');
-	TestIs(TAPTester.Lines[0], 'Bail out! testing the bailout', 'bailout ok');
 	TestIs(vBailedOut, True, 'bailout procedure called');
+	Fatal; TestIs(TAPTester.Lines.Count, 1, 'line count ok');
+	TestIs(TAPTester.Lines[0], 'Bail out! testing the bailout', 'bailout ok');
 end;
 
 procedure TBasicSuite.PragmaTest();
@@ -81,7 +81,7 @@ begin
 	Pragma('strict', False);
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 2, 'line count ok');
+	Fatal; TestIs(TAPTester.Lines.Count, 2, 'line count ok');
 	TestIs(TAPTester.Lines[0], 'pragma +bail', 'pragma on ok');
 	TestIs(TAPTester.Lines[1], 'pragma -strict', 'pragma off ok');
 end;
@@ -93,10 +93,10 @@ begin
 	Diag('this is a diag test');
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 1, 'line count ok');
+	Fatal; TestIs(TAPTester.Lines.Count, 1, 'line count ok');
 	TestIs(TAPTester.Lines[0], '# this is a test', 'note ok');
 
-	TestIs(TAPTester.DiagLines.Count, 1, 'diag line count ok');
+	Fatal; TestIs(TAPTester.DiagLines.Count, 1, 'diag line count ok');
 	TestIs(TAPTester.DiagLines[0], '# this is a diag test', 'diag ok');
 end;
 
@@ -107,8 +107,8 @@ begin
 	TestFail('test failed');
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 2, 'line count ok');
-	TestIs(TAPTester.DiagLines.Count, 4, 'diag lines count ok');
+	Fatal; TestIs(TAPTester.Lines.Count, 2, 'line count ok');
+	Fatal; TestIs(TAPTester.DiagLines.Count, 4, 'diag lines count ok');
 
 	TestIs(TAPTester.Lines[0], 'ok 1 - test passed', 'pass ok');
 	TestIs(TAPTester.Lines[1], 'not ok 2 - test failed', 'fail ok');
@@ -124,8 +124,8 @@ begin
 	TestOk(False, 'test 2');
 	TAPTester.Release;
 
-	TestIs(TAPTester.Lines.Count, 3, 'line count ok');
-	TestIs(TAPTester.DiagLines.Count, 4, 'diag line count ok');
+	Fatal; TestIs(TAPTester.Lines.Count, 3, 'line count ok');
+	Fatal; TestIs(TAPTester.DiagLines.Count, 4, 'diag line count ok');
 
 	TestIs(TAPTester.Lines[0], 'ok 1 - test 1', 'first test ok');
 	TestIs(TAPTester.Lines[1], 'ok 2', 'second test ok');
