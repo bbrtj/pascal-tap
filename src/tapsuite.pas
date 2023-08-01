@@ -105,11 +105,10 @@ begin
 
 			SubtestBegin('testing scenario: ' + vScenario.ScenarioName);
 			TAPGlobalContext.BailoutBehavior := btExceptionNoOutput;
+			vSuite.Setup();
 
 			try
-				vSuite.Setup();
 				vScenario.Runner();
-				vSuite.Teardown();
 			except
 				on E: Exception do begin
 					vError := E.Message;
@@ -119,6 +118,8 @@ begin
 						Diag('!! encountered an exception: ' + vError);
 				end;
 			end;
+
+			vSuite.Teardown();
 			SubtestEnd;
 
 			if length(vError) > 0 then begin
