@@ -25,7 +25,7 @@ procedure Diag(const vText: String);
 	Marks the next test fatal. Not passing the test will cause the bailout.
 }
 procedure Fatal();
-procedure FatalAll(const vEnabled: Boolean = True);
+procedure FatalAll(vEnabled: Boolean = True);
 
 {
 	Skips the next test executed (just one). Can also todo the next test or
@@ -50,7 +50,7 @@ procedure TestFail(const vName: String = ''; const vDiag: String = '(nothing)');
 	testpoint to the output depending on that test. In case of a failure, extra
 	diagnostics may be added as comments.
 }
-procedure TestOk(const vPassed: Boolean; const vName: String = '');
+procedure TestOk(vPassed: Boolean; const vName: String = '');
 
 {
 	Compares two first arguments and adds a testpoint to the output based on
@@ -58,46 +58,46 @@ procedure TestOk(const vPassed: Boolean; const vName: String = '');
 	Booleans and Object classes. Comparing Floats for equality is flawed on the
 	basic level, so no Float variant is provided.
 }
-procedure TestIs(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestIs(vGot, vExpected: Int64; const vName: String = '');
 procedure TestIs(const vGot, vExpected: String; const vName: String = '');
-procedure TestIs(const vGot, vExpected: Boolean; const vName: String = '');
-procedure TestIs(const vGot: TObject; const vExpected: TClass; const vName: String = '');
+procedure TestIs(vGot, vExpected: Boolean; const vName: String = '');
+procedure TestIs(vGot: TObject; vExpected: TClass; const vName: String = '');
 
 {
 	Same as TestIs, but fails if the arguments are equal.
 }
-procedure TestIsnt(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestIsnt(vGot, vExpected: Int64; const vName: String = '');
 procedure TestIsnt(const vGot, vExpected: String; const vName: String = '');
-procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String = '');
-procedure TestIsnt(const vGot: TObject; const vExpected: TClass; const vName: String = '');
+procedure TestIsnt(vGot, vExpected: Boolean; const vName: String = '');
+procedure TestIsnt(vGot: TObject; vExpected: TClass; const vName: String = '');
 
 {
 	Compares two numbers to determine whether one is greater than the other.
 }
-procedure TestGreater(const vGot, vExpected: Int64; const vName: String = '');
-procedure TestGreater(const vGot, vExpected: Double; const vName: String = '');
-procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String = '');
-procedure TestLesser(const vGot, vExpected: Int64; const vName: String = '');
-procedure TestLesser(const vGot, vExpected: Double; const vName: String = '');
-procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestGreater(vGot, vExpected: Int64; const vName: String = '');
+procedure TestGreater(vGot, vExpected: Double; const vName: String = '');
+procedure TestGreaterOrEqual(vGot, vExpected: Int64; const vName: String = '');
+procedure TestLesser(vGot, vExpected: Int64; const vName: String = '');
+procedure TestLesser(vGot, vExpected: Double; const vName: String = '');
+procedure TestLesserOrEqual(vGot, vExpected: Int64; const vName: String = '');
 
 {
 	Tests whether two floating point values are within the precision of each other.
 }
-procedure TestWithin(const vGot, vExpected, vPrecision: Double; const vName: String = '');
+procedure TestWithin(vGot, vExpected, vPrecision: Double; const vName: String = '');
 
 {
 	Outputs a pragma. Since pragmas are implementation-specific, no predefined
 	list exists and full string name of the pragma must be specified.
 }
-procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
+procedure Pragma(const vPragma: String; vStatus: Boolean = True);
 
 {
 	Adds an explicit plan to the output. Best run before running other tests.
 	If you don't want to count tests manually you can finish your test with
 	DoneTesting instead.
 }
-procedure Plan(const vNumber: UInt32; const vReason: String = '');
+procedure Plan(vNumber: UInt32; const vReason: String = '');
 
 {
 	Outputs a plan based on the number of tests ran (if it was not printed
@@ -127,7 +127,7 @@ begin
 	result := '''' + vVal + '''';
 end;
 
-function BoolToReadableStr(const vBool: Boolean): String;
+function BoolToReadableStr(vBool: Boolean): String;
 begin
 	if vBool then
 		result := 'True'
@@ -153,7 +153,7 @@ begin
 		TAPGlobalContext.Fatal := ftFatalSingle;
 end;
 
-procedure FatalAll(const vEnabled: Boolean = True);
+procedure FatalAll(vEnabled: Boolean = True);
 begin
 	if vEnabled then
 		TAPGlobalContext.Fatal := ftFatalAll
@@ -202,7 +202,7 @@ begin
 	);
 end;
 
-procedure TestOk(const vPassed: Boolean; const vName: String = '');
+procedure TestOk(vPassed: Boolean; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vPassed,
@@ -212,7 +212,7 @@ begin
 	);
 end;
 
-procedure TestIs(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestIs(vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot = vExpected,
@@ -232,7 +232,7 @@ begin
 	);
 end;
 
-procedure TestIs(const vGot, vExpected: Boolean; const vName: String = '');
+procedure TestIs(vGot, vExpected: Boolean; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot = vExpected,
@@ -242,7 +242,7 @@ begin
 	);
 end;
 
-procedure TestIs(const vGot: TObject; const vExpected: TClass; const vName: String = '');
+procedure TestIs(vGot: TObject; vExpected: TClass; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot is vExpected,
@@ -252,7 +252,7 @@ begin
 	);
 end;
 
-procedure TestIsnt(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestIsnt(vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		not(vGot = vExpected),
@@ -272,7 +272,7 @@ begin
 	);
 end;
 
-procedure TestIsnt(const vGot, vExpected: Boolean; const vName: String = '');
+procedure TestIsnt(vGot, vExpected: Boolean; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		not(vGot = vExpected),
@@ -282,7 +282,7 @@ begin
 	);
 end;
 
-procedure TestIsnt(const vGot: TObject; const vExpected: TClass; const vName: String = '');
+procedure TestIsnt(vGot: TObject; vExpected: TClass; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		not(vGot is vExpected),
@@ -292,7 +292,7 @@ begin
 	);
 end;
 
-procedure TestGreater(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestGreater(vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot > vExpected,
@@ -302,7 +302,7 @@ begin
 	);
 end;
 
-procedure TestGreater(const vGot, vExpected: Double; const vName: String = '');
+procedure TestGreater(vGot, vExpected: Double; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot > vExpected,
@@ -312,7 +312,7 @@ begin
 	);
 end;
 
-procedure TestGreaterOrEqual(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestGreaterOrEqual(vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot >= vExpected,
@@ -322,7 +322,7 @@ begin
 	);
 end;
 
-procedure TestLesser(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestLesser(vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot < vExpected,
@@ -332,7 +332,7 @@ begin
 	);
 end;
 
-procedure TestLesser(const vGot, vExpected: Double; const vName: String = '');
+procedure TestLesser(vGot, vExpected: Double; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot < vExpected,
@@ -342,7 +342,7 @@ begin
 	);
 end;
 
-procedure TestLesserOrEqual(const vGot, vExpected: Int64; const vName: String = '');
+procedure TestLesserOrEqual(vGot, vExpected: Int64; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		vGot <= vExpected,
@@ -352,7 +352,7 @@ begin
 	);
 end;
 
-procedure TestWithin(const vGot, vExpected, vPrecision: Double; const vName: String = '');
+procedure TestWithin(vGot, vExpected, vPrecision: Double; const vName: String = '');
 begin
 	TAPGlobalContext.Ok(
 		abs(vGot - vExpected) < vPrecision,
@@ -362,12 +362,12 @@ begin
 	);
 end;
 
-procedure Pragma(const vPragma: String; const vStatus: Boolean = True);
+procedure Pragma(const vPragma: String; vStatus: Boolean = True);
 begin
 	TAPGlobalContext.Pragma(vPragma, vStatus);
 end;
 
-procedure Plan(const vNumber: UInt32; const vReason: String = '');
+procedure Plan(vNumber: UInt32; const vReason: String = '');
 begin
 	TAPGlobalContext.Plan(vNumber, vReason);
 end;

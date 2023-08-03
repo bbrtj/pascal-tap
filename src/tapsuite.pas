@@ -22,7 +22,7 @@ type
 	TTAPScenario = record
 		Runner: TTAPScenarioRunner;
 		ScenarioName: String;
-		class operator= (const vR1, vR2: TTAPScenario): Boolean;
+		class operator= (vR1, vR2: TTAPScenario): Boolean;
 	end;
 
 	TTAPScenarios = specialize TFPGList<TTAPScenario>;
@@ -55,7 +55,7 @@ type
 			Add a scenario to be run in this suite. Should be run in the constructor.
 			A scenario is a method (procedure).
 		}
-		procedure Scenario(const vRunner: TTAPScenarioRunner; const vName: String = '');
+		procedure Scenario(vRunner: TTAPScenarioRunner; const vName: String = '');
 
 	public
 		constructor Create(); virtual;
@@ -78,7 +78,7 @@ var
 	Add a suite to the tests. Suites will be run in the same order they were
 	added.
 }
-procedure Suite(const vSuiteClass: TTAPSuiteClass);
+procedure Suite(vSuiteClass: TTAPSuiteClass);
 
 {
 	Run all registered test suites.
@@ -87,12 +87,12 @@ procedure RunAllSuites();
 
 implementation
 
-class operator TTAPScenario.= (const vR1, vR2: TTAPScenario): Boolean;
+class operator TTAPScenario.= (vR1, vR2: TTAPScenario): Boolean;
 begin
 	result := vR1.Runner = vR2.Runner;
 end;
 
-procedure Suite(const vSuiteClass: TTAPSuiteClass);
+procedure Suite(vSuiteClass: TTAPSuiteClass);
 begin
 	TAPSuites.Add(vSuiteClass.Create);
 end;
@@ -149,7 +149,7 @@ begin
 	end;
 end;
 
-procedure TTAPSuite.Scenario(const vRunner: TTAPScenarioRunner; const vName: String = '');
+procedure TTAPSuite.Scenario(vRunner: TTAPScenarioRunner; const vName: String = '');
 var
 	vScenario: TTAPScenario;
 begin

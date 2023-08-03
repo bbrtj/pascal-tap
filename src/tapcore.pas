@@ -27,7 +27,7 @@ type
 	TSkippedType = (stNoSkip, stSkip, stTodo, stSkipAll);
 	TFatalType = (ftNoFatal, ftFatalSingle, ftFatalAll);
 	TBailoutType = (btHalt, btException, btExceptionNoOutput);
-	TTAPPrinter = procedure(const vLine: String; const vDiag: Boolean) of Object;
+	TTAPPrinter = procedure(const vLine: String; vDiag: Boolean) of Object;
 
 	EBailout = class(Exception);
 
@@ -66,20 +66,20 @@ type
 		FPrinter: TTAPPrinter;
 		FBailoutBehavior: TBailoutType;
 
-		procedure PrintToStandardOutput(const vLine: String; const vDiag: Boolean);
+		procedure PrintToStandardOutput(const vLine: String; vDiag: Boolean);
 
-		procedure Print(vVals: Array of String; const vDiag: Boolean = False);
+		procedure Print(vVals: Array of String; vDiag: Boolean = False);
 		procedure PrintDiag(const vName, vExpected, vGot: String);
 
 	public
-		constructor Create(const vParent: TTAPContext = nil); virtual;
+		constructor Create(vParent: TTAPContext = nil); virtual;
 
-		procedure Skip(const vSkip: TSkippedType; const vReason: String); virtual;
-		procedure Ok(const vPassed: Boolean; const vName, vExpected, vGot: String); virtual;
+		procedure Skip(vSkip: TSkippedType; const vReason: String); virtual;
+		procedure Ok(vPassed: Boolean; const vName, vExpected, vGot: String); virtual;
 
-		procedure Comment(const vText: String; const vDiag: Boolean = False); virtual;
-		procedure Pragma(const vPragma: String; const vStatus: Boolean = True); virtual;
-		procedure Plan(const vNumber: UInt32; const vReason: String = ''; const vSkipIfPlanned: Boolean = False); virtual;
+		procedure Comment(const vText: String; vDiag: Boolean = False); virtual;
+		procedure Pragma(const vPragma: String; vStatus: Boolean = True); virtual;
+		procedure Plan(vNumber: UInt32; const vReason: String = ''; vSkipIfPlanned: Boolean = False); virtual;
 		procedure BailOut(const vReason: String); virtual;
 
 		function SubtestBegin(const vName: String): TTAPContext; virtual;
@@ -109,7 +109,7 @@ end;
 
 // Object interface
 
-procedure TTAPContext.PrintToStandardOutput(const vLine: String; const vDiag: Boolean);
+procedure TTAPContext.PrintToStandardOutput(const vLine: String; vDiag: Boolean);
 begin
 	if vDiag then
 		writeln(StdErr, vLine)
@@ -117,7 +117,7 @@ begin
 		writeln(vLine);
 end;
 
-procedure TTAPContext.Print(vVals: Array of String; const vDiag: Boolean = False);
+procedure TTAPContext.Print(vVals: Array of String; vDiag: Boolean = False);
 var
 	vStr: String = '';
 	vInd: Int32;
@@ -144,7 +144,7 @@ begin
 	self.Comment('', True);
 end;
 
-constructor TTAPContext.Create(const vParent: TTAPContext = nil);
+constructor TTAPContext.Create(vParent: TTAPContext = nil);
 begin
 	self.FParent := vParent;
 	self.FName := '';
@@ -174,7 +174,7 @@ begin
 	end;
 end;
 
-procedure TTAPContext.Comment(const vText: String; const vDiag: Boolean = False);
+procedure TTAPContext.Comment(const vText: String; vDiag: Boolean = False);
 begin
 	if self.FSkipped = stSkipAll then exit;
 
@@ -184,7 +184,7 @@ begin
 		self.Print([], vDiag);
 end;
 
-procedure TTAPContext.Skip(const vSkip: TSkippedType; const vReason: String);
+procedure TTAPContext.Skip(vSkip: TSkippedType; const vReason: String);
 begin
 	if self.FSkipped = stSkipAll then exit;
 
@@ -199,7 +199,7 @@ begin
 	self.FSkippedReason := vReason;
 end;
 
-procedure TTAPContext.Ok(const vPassed: Boolean; const vName, vExpected, vGot: String);
+procedure TTAPContext.Ok(vPassed: Boolean; const vName, vExpected, vGot: String);
 var
 	vResult: String = cTAPOk;
 	vSkipped: Boolean;
@@ -237,7 +237,7 @@ begin
 	end;
 end;
 
-procedure TTAPContext.Pragma(const vPragma: String; const vStatus: Boolean = True);
+procedure TTAPContext.Pragma(const vPragma: String; vStatus: Boolean = True);
 var
 	vPragmaStatus: Char;
 begin
@@ -251,7 +251,7 @@ begin
 	self.Print([cTAPPragma, vPragmaStatus, vPragma]);
 end;
 
-procedure TTAPContext.Plan(const vNumber: UInt32; const vReason: String = ''; const vSkipIfPlanned: Boolean = False);
+procedure TTAPContext.Plan(vNumber: UInt32; const vReason: String = ''; vSkipIfPlanned: Boolean = False);
 var
 	vFullReason: String = '';
 begin

@@ -13,7 +13,7 @@ type
 		FDiagOutput: TStringList;
 		FLastContext: TTAPContext;
 
-		procedure PrintToVariable(const vLine: String; const vDiag: Boolean);
+		procedure PrintToVariable(const vLine: String; vDiag: Boolean);
 
 	public
 		constructor Create();
@@ -31,7 +31,7 @@ var
 
 implementation
 
-procedure TTAPTester.PrintToVariable(const vLine: String; const vDiag: Boolean);
+procedure TTAPTester.PrintToVariable(const vLine: String; vDiag: Boolean);
 begin
 	if vDiag then self.FDiagOutput.Append(vLine)
 	else self.FOutput.Append(vLine);
