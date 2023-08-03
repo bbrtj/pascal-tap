@@ -33,20 +33,20 @@ implementation
 
 procedure TTAPTester.PrintToVariable(const vLine: String; vDiag: Boolean);
 begin
-	if vDiag then self.FDiagOutput.Append(vLine)
-	else self.FOutput.Append(vLine);
+	if vDiag then FDiagOutput.Append(vLine)
+	else FOutput.Append(vLine);
 end;
 
 constructor TTAPTester.Create();
 begin
-	self.FOutput := TStringList.Create;
-	self.FDiagOutput := TStringList.Create;
+	FOutput := TStringList.Create;
+	FDiagOutput := TStringList.Create;
 end;
 
 destructor TTAPTester.Destroy;
 begin
-	self.FOutput.Free;
-	self.FDiagOutput.Free;
+	FOutput.Free;
+	FDiagOutput.Free;
 end;
 
 procedure TTAPTester.Hijack();
@@ -54,12 +54,12 @@ var
 	vNewContext: TTAPContext;
 begin
 	vNewContext := TTAPContext.Create;
-	self.FOutput.Clear;
-	self.FDiagOutput.Clear;
+	FOutput.Clear;
+	FDiagOutput.Clear;
 	vNewContext.Printer := @self.PrintToVariable;
 	vNewContext.BailoutBehavior := btException;
 
-	self.FLastContext := TAPGlobalContext;
+	FLastContext := TAPGlobalContext;
 	TAPGlobalContext := vNewContext;
 end;
 

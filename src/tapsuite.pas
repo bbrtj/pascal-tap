@@ -159,19 +159,19 @@ begin
 	else
 		vScenario.ScenarioName := '(unnamed)';
 
-	self.FScenarios.Add(vScenario);
+	FScenarios.Add(vScenario);
 end;
 
 constructor TTAPSuite.Create();
 begin
-	self.FScenarios := TTAPScenarios.Create;
-	self.FSuiteName := self.ClassName;
+	FScenarios := TTAPScenarios.Create;
+	FSuiteName := self.ClassName;
 end;
 
 destructor TTAPSuite.Destroy;
 begin
-	if self.FScenarios <> nil then
-		self.FScenarios.Free;
+	if FScenarios <> nil then
+		FScenarios.Free;
 
 	inherited;
 end;

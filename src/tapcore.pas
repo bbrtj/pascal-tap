@@ -123,14 +123,14 @@ var
 	vInd: Int32;
 begin
 	vStr := '';
-	for vInd := 1 to self.FNested do
+	for vInd := 1 to FNested do
 		vStr += cTAPSubtestIndent;
 
 	for vInd := low(vVals) to high(vVals) do begin
 		vStr += vVals[Int32(vInd)];
 	end;
 
-	self.FPrinter(vStr, vDiag);
+	FPrinter(vStr, vDiag);
 end;
 
 procedure TTAPContext.PrintDiag(const vName, vExpected, vGot: String);
@@ -147,37 +147,37 @@ end;
 
 constructor TTAPContext.Create(vParent: TTAPContext = nil);
 begin
-	self.FParent := vParent;
-	self.FName := '';
+	FParent := vParent;
+	FName := '';
 
-	self.FPassed := 0;
-	self.FExecuted := 0;
-	self.FPlanned := False;
-	self.FPlan := 0;
+	FPassed := 0;
+	FExecuted := 0;
+	FPlanned := False;
+	FPlan := 0;
 
 	if vParent <> nil then begin
-		self.FNested := vParent.FNested + 1;
-		self.FSkipped := vParent.FSkipped;
-		self.FSkippedReason := vParent.FSkippedReason;
-		self.FFatal := vParent.FFatal;
+		FNested := vParent.FNested + 1;
+		FSkipped := vParent.FSkipped;
+		FSkippedReason := vParent.FSkippedReason;
+		FFatal := vParent.FFatal;
 
-		self.FPrinter := vParent.FPrinter;
-		self.FBailoutBehavior := vParent.FBailoutBehavior;
+		FPrinter := vParent.FPrinter;
+		FBailoutBehavior := vParent.FBailoutBehavior;
 	end
 	else begin
-		self.FNested := 0;
-		self.FSkipped := stNoSkip;
-		self.FSkippedReason := '';
-		self.FFatal := ftNoFatal;
+		FNested := 0;
+		FSkipped := stNoSkip;
+		FSkippedReason := '';
+		FFatal := ftNoFatal;
 
-		self.FPrinter := @self.PrintToStandardOutput;
-		self.FBailoutBehavior := btHalt;
+		FPrinter := @self.PrintToStandardOutput;
+		FBailoutBehavior := btHalt;
 	end;
 end;
 
 procedure TTAPContext.Comment(const vText: String; vDiag: Boolean = False);
 begin
-	if self.FSkipped = stSkipAll then exit;
+	if FSkipped = stSkipAll then exit;
 
 	if length(vText) > 0 then
 		self.Print([cTAPComment, vText], vDiag)
@@ -187,17 +187,17 @@ end;
 
 procedure TTAPContext.Skip(vSkip: TSkippedType; const vReason: String);
 begin
-	if self.FSkipped = stSkipAll then exit;
+	if FSkipped = stSkipAll then exit;
 
 	if vSkip = stSkipAll then begin
-		if self.FExecuted > 0 then
+		if FExecuted > 0 then
 			self.BailOut('cannot skip a running test');
 
 		self.Plan(0, cTAPSkip + vReason);
 	end;
 
-	self.FSkipped := vSkip;
-	self.FSkippedReason := vReason;
+	FSkipped := vSkip;
+	FSkippedReason := vReason;
 end;
 
 procedure TTAPContext.Ok(vPassed: Boolean; const vName, vExpected, vGot: String);
@@ -205,24 +205,24 @@ var
 	vResult: String;
 	vSkipped: Boolean;
 begin
-	if self.FSkipped = stSkipAll then exit;
-	vSkipped := self.FSkipped <> stNoSkip;
+	if FSkipped = stSkipAll then exit;
+	vSkipped := FSkipped <> stNoSkip;
 
-	self.FExecuted += 1;
-	self.FPassed += Integer(vPassed);
+	FExecuted += 1;
+	FPassed += Integer(vPassed);
 
 	vResult := cTAPOk;
 	if not vPassed then
 		vResult := cTAPNot + vResult;
 
-	vResult += IntToStr(self.FExecuted);
+	vResult += IntToStr(FExecuted);
 
 	if length(vName) > 0 then
 		vResult += ' - ' + Escaped(vName);
 
-	case self.FSkipped of
-		stSkip: vResult += ' ' + cTAPComment + cTAPSkip + self.FSkippedReason;
-		stTodo: vResult += ' ' + cTAPComment + cTAPTodo + self.FSkippedReason;
+	case FSkipped of
+		stSkip: vResult += ' ' + cTAPComment + cTAPSkip + FSkippedReason;
+		stTodo: vResult += ' ' + cTAPComment + cTAPTodo + FSkippedReason;
 	else
 	end;
 
@@ -233,8 +233,8 @@ begin
 
 	self.Skip(stNoSkip, '');
 
-	if self.FFatal <> ftNoFatal then begin
-		if self.FFatal = ftFatalSingle then self.FFatal := ftNoFatal;
+	if FFatal <> ftNoFatal then begin
+		if FFatal = ftFatalSingle then FFatal := ftNoFatal;
 		if (not vPassed) and (not vSkipped) then self.BailOut('fatal test failure');
 	end;
 end;
@@ -243,7 +243,7 @@ procedure TTAPContext.Pragma(const vPragma: String; vStatus: Boolean = True);
 var
 	vPragmaStatus: Char;
 begin
-	if self.FSkipped = stSkipAll then exit;
+	if FSkipped = stSkipAll then exit;
 
 	if vStatus then
 		vPragmaStatus := '+'
@@ -257,15 +257,15 @@ procedure TTAPContext.Plan(vNumber: UInt32; const vReason: String = ''; vSkipIfP
 var
 	vFullReason: String;
 begin
-	if self.FSkipped = stSkipAll then exit;
+	if FSkipped = stSkipAll then exit;
 
-	if self.FPlanned then begin
+	if FPlanned then begin
 		if vSkipIfPlanned then exit;
 		self.BailOut('cannot plan twice');
 	end;
 
-	self.FPlan := vNumber;
-	self.FPlanned := True;
+	FPlan := vNumber;
+	FPlanned := True;
 
 	if length(vReason) > 0 then
 		vFullReason := ' ' + cTAPComment + Escaped(vReason)
@@ -277,14 +277,14 @@ end;
 
 procedure TTAPContext.BailOut(const vReason: String);
 begin
-	if self.FSkipped = stSkipAll then exit;
+	if FSkipped = stSkipAll then exit;
 
 	// not using self.Print causes bailout to be printed at top TAP
 	// level (compatibility with TAP 13)
-	if self.FBailoutBehavior <> btExceptionNoOutput then
-		self.FPrinter(cTAPBailOut + Escaped(vReason), False);
+	if FBailoutBehavior <> btExceptionNoOutput then
+		FPrinter(cTAPBailOut + Escaped(vReason), False);
 
-	case self.FBailoutBehavior of
+	case FBailoutBehavior of
 		btHalt: halt(255);
 		btException, btExceptionNoOutput: raise EBailout.Create(vReason);
 	end;
@@ -300,15 +300,15 @@ end;
 
 function TTAPContext.SubtestEnd(): TTAPContext;
 begin
-	if self.FParent = nil then
+	if FParent = nil then
 		self.BailOut('no subtest to end');
 
-	result := self.FParent;
+	result := FParent;
 
-	self.Plan(self.FExecuted, '', True);
-	if self.FSkipped = stSkipAll then result.Skip(stSkip, self.FSkippedReason);
-	result.Ok(self.FPlan = self.FPassed, self.FName, 'pass', 'fail');
-	self.Free;
+	self.Plan(FExecuted, '', True);
+	if FSkipped = stSkipAll then result.Skip(stSkip, FSkippedReason);
+	result.Ok(FPlan = FPassed, FName, 'pass', 'fail');
+	Free;
 end;
 
 initialization
