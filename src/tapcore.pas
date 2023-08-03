@@ -119,9 +119,10 @@ end;
 
 procedure TTAPContext.Print(vVals: Array of String; vDiag: Boolean = False);
 var
-	vStr: String = '';
+	vStr: String;
 	vInd: Int32;
 begin
+	vStr := '';
 	for vInd := 1 to self.FNested do
 		vStr += cTAPSubtestIndent;
 
@@ -201,7 +202,7 @@ end;
 
 procedure TTAPContext.Ok(vPassed: Boolean; const vName, vExpected, vGot: String);
 var
-	vResult: String = cTAPOk;
+	vResult: String;
 	vSkipped: Boolean;
 begin
 	if self.FSkipped = stSkipAll then exit;
@@ -210,6 +211,7 @@ begin
 	self.FExecuted += 1;
 	self.FPassed += Integer(vPassed);
 
+	vResult := cTAPOk;
 	if not vPassed then
 		vResult := cTAPNot + vResult;
 
@@ -253,7 +255,7 @@ end;
 
 procedure TTAPContext.Plan(vNumber: UInt32; const vReason: String = ''; vSkipIfPlanned: Boolean = False);
 var
-	vFullReason: String = '';
+	vFullReason: String;
 begin
 	if self.FSkipped = stSkipAll then exit;
 
@@ -266,7 +268,9 @@ begin
 	self.FPlanned := True;
 
 	if length(vReason) > 0 then
-		vFullReason := ' ' + cTAPComment + Escaped(vReason);
+		vFullReason := ' ' + cTAPComment + Escaped(vReason)
+	else
+		vFullReason := '';
 
 	self.Print(['1..', IntToStr(vNumber), vFullReason]);
 end;

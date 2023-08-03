@@ -67,8 +67,10 @@ end;
 
 procedure TBasicSuite.BailTest();
 var
-	vBailedOut: Boolean = False;
+	vBailedOut: Boolean;
 begin
+	vBailedOut := False;
+
 	TAPTester.Hijack;
 
 	try
