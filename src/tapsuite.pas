@@ -139,9 +139,9 @@ begin
 
 			if length(vError) > 0 then begin
 				if vSuite is ITAPSuiteEssential then
-					BailOut('essential scenario failed: ' + vError)
+					BailOut('essential scenario "' + vScenario.ScenarioName + '" failed: ' + vError)
 				else
-					TestFail('scenario failed: ' + vError, 'scenario finishing without exceptions');
+					TestFail('scenario "' + vScenario.ScenarioName + '" failed: ' + vError, 'scenario finishing without exceptions');
 			end;
 		end;
 
